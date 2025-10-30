@@ -1,23 +1,146 @@
-<div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin-bottom: 24px;">
-      <h2 style="color: #1a1a1a; font-size: 1.3rem; margin: 0 0 12px 0;">Contatto Rapido WhatsApp</h2>
-      <p style="margin-bottom: 16px; font-size: 0.9rem;">Seleziona le date e invia la richiesta direttamente su WhatsApp</p>
-      
-      <label for="checkin">Data di Check-in</label>
-      <input type="date" id="checkin" required>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prenotazioni — Casa Luigi</title>
+  <style>
+    body {
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(135deg, #f7f9fc, #e3eeff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
 
-      <label for="checkout">Data di Check-out</label>
-      <input type="date" id="checkout" required>
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 32px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      margin-top: 40px;
+    }
 
-      <a id="whatsappBtn" class="button whatsapp" target="_blank">
-        <span style="font-size: 1.2rem;">💬</span> Invia Richiesta su WhatsApp
-      </a>
-    </div>
+    img.logo {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      object-fit: cover;
+      max-height: 250px;
+    }
 
-    <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
-      <h2 style="color: #1a1a1a; font-size: 1.3rem; margin: 0 0 12px 0;">Prenota con Google Calendar</h2>
-      <p style="margin-bottom: 16px; font-size: 0.9rem;">Visualizza la disponibilità e prenota direttamente online</p>
-      
-      <!-- Google Calendar Appointment Scheduling begin -->
-      <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0izdXEYljvX9blT58PN1AjX-aq-QP9lkFpp7m-N2QnmSAWLravUgec6pI_sTqV24_7gW1sdzkU?gv=true" width="100%" height="600" frameborder="0"></iframe>
-      <!-- end Google Calendar Appointment Scheduling -->
-    </div>
+    h1 {
+      color: #1a1a1a;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-top: 16px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      text-decoration: none;
+    }
+
+    .whatsapp {
+      background-color: #25D366;
+    }
+    .whatsapp:hover {
+      background-color: #1ebd5a;
+    }
+
+    iframe {
+      margin-top: 30px;
+      border-radius: 12px;
+      border: 0;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo / Foto -->
+    <img src="2024-04-24.webp" alt="Casa Luigi" class="logo">
+
+    <h1>Prenota il tuo soggiorno</h1>
+    <p>Consulta le disponibilità e invia la tua richiesta direttamente su WhatsApp o tramite Google Calendar.</p>
+
+    <label for="checkin">Data di Check-in</label>
+    <input type="date" id="checkin">
+
+    <label for="checkout">Data di Check-out</label>
+    <input type="date" id="checkout">
+
+    <!-- Pulsante WhatsApp -->
+    <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia richiesta su WhatsApp</a>
+
+    <!-- Google Calendar -->
+    <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ0izdXEYljvX9blT58PN1AjX-aq-QP9lkFpp7m-N2QnmSAWLravUgec6pI_sTqV24_7gW1sdzkU?gv=true" width="100%" height="600"></iframe>
+
+    <footer>
+      <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const phone = '393382661198';
+
+    function formatDate(d) {
+      if (!d) return '';
+      const parts = d.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function updateWhatsAppLink() {
+      const checkin = document.getElementById('checkin').value;
+      const checkout = document.getElementById('checkout').value;
+      let message = "Ciao Luigi, vorrei prenotare";
+
+      if(checkin && checkout) {
+        message += ` dal ${formatDate(checkin)} al ${formatDate(checkout)}`;
+      }
+
+      message += ". È disponibile?";
+      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    }
+
+    document.getElementById('checkin').addEventListener('change', updateWhatsAppLink);
+    document.getElementById('checkout').addEventListener('change', updateWhatsAppLink);
+  </script>
+</body>
+</html>
+
