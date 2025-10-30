@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prenotazioni — Casa Luigi</title>
+
+  <!-- PayPal SDK (Parte 1) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+
   <style>
     body {
       font-family: 'Inter', Arial, sans-serif;
@@ -83,6 +87,10 @@
     .email { background-color: #0078D4; }
     .email:hover { background-color: #005fa3; }
 
+    .paypal-container {
+      margin-top: 20px;
+    }
+
     footer {
       margin-top: 20px;
       font-size: 0.8rem;
@@ -92,7 +100,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Inserisci qui la foto dell’appartamento -->
     <img src="2024-04-24.webp" alt="Casa Luigi" class="logo">
 
     <h1>Prenota il tuo soggiorno</h1>
@@ -107,6 +114,13 @@
     <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia su WhatsApp</a>
     <a id="emailBtn" class="button email" target="_blank">Invia tramite Email</a>
 
+    <div class="paypal-container" id="paypal-container-EN4V2C9NXVMBE"></div>
+    <script>
+      paypal.HostedButtons({
+        hostedButtonId: "EN4V2C9NXVMBE",
+      }).render("#paypal-container-EN4V2C9NXVMBE");
+    </script>
+
     <footer>
       <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
     </footer>
@@ -115,9 +129,16 @@
   <script>
     const whatsappBtn = document.getElementById('whatsappBtn');
     const emailBtn = document.getElementById('emailBtn');
+    const checkinInput = document.getElementById('checkin');
+    const checkoutInput = document.getElementById('checkout');
 
     const phone = '393382661198';
     const email = 'luigi.caparello@gmail.com';
+
+    // Imposta il minimo per il check-in e check-out
+    const today = new Date().toISOString().split('T')[0];
+    checkinInput.min = today;
+    checkoutInput.min = today;
 
     function formatDate(d) {
       if (!d) return '';
@@ -126,15 +147,33 @@
     }
 
     function updateLinks() {
-      const checkin = document.getElementById('checkin').value;
-      const checkout = document.getElementById('checkout').value;
+      const checkin = checkinInput.value;
+      const checkout = checkoutInput.value;
+      if(!checkin || !checkout) return;
+
+      if(checkout < checkin) {
+        alert("La data di check-out deve essere successiva al check-in.");
+        return;
+      }
+
       const message = `Ciao Luigi, vorrei prenotare dal ${formatDate(checkin)} al ${formatDate(checkout)}.`;
       whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       emailBtn.href = `mailto:${email}?subject=Richiesta%20prenotazione&body=${encodeURIComponent(message)}`;
     }
 
-    document.getElementById('checkin').addEventListener('change', updateLinks);
-    document.getElementById('checkout').addEventListener('change', updateLinks);
+    // Aggiorna i min per il check-out quando cambia il check-in
+    checkinInput.addEventListener('change', () => {
+      const checkin = checkinInput.value;
+      if(checkin) {
+        checkoutInput.min = checkin;
+        if(checkoutInput.value && checkoutInput.value < checkin) {
+          checkoutInput.value = checkin;
+        }
+      }
+      updateLinks();
+    });
+
+    checkoutInput.addEventListener('change', updateLinks);
   </script>
 </body>
 </html>
