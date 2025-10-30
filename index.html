@@ -13,7 +13,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .container {
@@ -24,6 +24,14 @@
       max-width: 400px;
       width: 90%;
       text-align: center;
+    }
+
+    img.logo {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      object-fit: cover;
+      max-height: 200px;
     }
 
     h1 {
@@ -69,21 +77,11 @@
       text-decoration: none;
     }
 
-    .whatsapp {
-      background-color: #25D366;
-    }
+    .whatsapp { background-color: #25D366; }
+    .whatsapp:hover { background-color: #1ebd5a; }
 
-    .whatsapp:hover {
-      background-color: #1ebd5a;
-    }
-
-    .email {
-      background-color: #0078D4;
-    }
-
-    .email:hover {
-      background-color: #005fa3;
-    }
+    .email { background-color: #0078D4; }
+    .email:hover { background-color: #005fa3; }
 
     footer {
       margin-top: 20px;
@@ -94,6 +92,9 @@
 </head>
 <body>
   <div class="container">
+    <!-- Inserisci qui la foto dell’appartamento -->
+    <img src="https://via.placeholder.com/400x200.png?text=Casa+Luigi" alt="Casa Luigi" class="logo">
+
     <h1>Prenota il tuo soggiorno</h1>
     <p>Compila le date e contattami direttamente per confermare la disponibilità.</p>
 
@@ -127,9 +128,7 @@
     function updateLinks() {
       const checkin = document.getElementById('checkin').value;
       const checkout = document.getElementById('checkout').value;
-
       const message = `Ciao Luigi, vorrei prenotare dal ${formatDate(checkin)} al ${formatDate(checkout)}.`;
-
       whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       emailBtn.href = `mailto:${email}?subject=Richiesta%20prenotazione&body=${encodeURIComponent(message)}`;
     }
