@@ -3,83 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prenota il tuo soggiorno</title>
+  <title>Prenotazioni — Casa Luigi</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+      font-family: 'Inter', Arial, sans-serif;
+      background: linear-gradient(135deg, #f7f9fc, #e3eeff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      padding: 32px;
+      max-width: 400px;
+      width: 90%;
       text-align: center;
-      padding: 40px;
-      color: #212529;
     }
-    h2 {
-      color: #2b2b2b;
+
+    h1 {
+      color: #1a1a1a;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
     }
+
     p {
       color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
-    input {
-      margin: 10px;
-      padding: 12px;
-      width: 230px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
-    button {
+
+    label {
       display: block;
-      margin: 15px auto;
-      padding: 12px 25px;
-      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-top: 1rem;
+      text-align: left;
+    }
+
+    input[type="date"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
       border-radius: 8px;
+      font-size: 0.95rem;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
       border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
       cursor: pointer;
-      width: 250px;
-      transition: 0.3s;
+      transition: background 0.3s ease;
+      text-decoration: none;
     }
+
     .whatsapp {
-      background-color: #25d366;
-      color: white;
+      background-color: #25D366;
     }
+
     .whatsapp:hover {
-      background-color: #1eb15a;
+      background-color: #1ebd5a;
     }
+
     .email {
-      background-color: #0078d7;
-      color: white;
+      background-color: #0078D4;
     }
+
     .email:hover {
       background-color: #005fa3;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: #888;
     }
   </style>
 </head>
 <body>
-  <h2>Prenota il tuo soggiorno</h2>
-  <p>Inserisci le date e contattaci su WhatsApp o via email</p>
-  
-  <input type="date" id="checkin" />
-  <input type="date" id="checkout" />
+  <div class="container">
+    <h1>Prenota il tuo soggiorno</h1>
+    <p>Compila le date e contattami direttamente per confermare la disponibilità.</p>
 
-  <button class="whatsapp" onclick="sendWhatsApp()">Scrivici su WhatsApp</button>
-  <button class="email" onclick="sendEmail()">Mandaci un'email</button>
+    <label for="checkin">Data di Check-in</label>
+    <input type="date" id="checkin" required>
+
+    <label for="checkout">Data di Check-out</label>
+    <input type="date" id="checkout" required>
+
+    <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia su WhatsApp</a>
+    <a id="emailBtn" class="button email" target="_blank">Invia tramite Email</a>
+
+    <footer>
+      <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
+    </footer>
+  </div>
 
   <script>
-    function sendWhatsApp() {
-      const checkin = document.getElementById("checkin").value;
-      const checkout = document.getElementById("checkout").value;
-      const text = `Ciao, vorrei prenotare dal ${checkin} al ${checkout}. È disponibile?`;
-      const url = `https://wa.me/393382661198?text=${encodeURIComponent(text)}`;
-      window.open(url, "_blank");
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const emailBtn = document.getElementById('emailBtn');
+
+    const phone = '393382661198';
+    const email = 'luigi.caparello@gmail.com';
+
+    function formatDate(d) {
+      if (!d) return '';
+      const parts = d.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
     }
 
-    function sendEmail() {
-      const checkin = document.getElementById("checkin").value;
-      const checkout = document.getElementById("checkout").value;
-      const subject = "Richiesta prenotazione";
-      const body = `Ciao, vorrei prenotare dal ${checkin} al ${checkout}. È disponibile?`;
-      const mailto = `mailto:luigi.caparello@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.open(mailto, "_blank");
+    function updateLinks() {
+      const checkin = document.getElementById('checkin').value;
+      const checkout = document.getElementById('checkout').value;
+
+      const message = `Ciao Luigi, vorrei prenotare dal ${formatDate(checkin)} al ${formatDate(checkout)}.`;
+
+      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      emailBtn.href = `mailto:${email}?subject=Richiesta%20prenotazione&body=${encodeURIComponent(message)}`;
     }
+
+    document.getElementById('checkin').addEventListener('change', updateLinks);
+    document.getElementById('checkout').addEventListener('change', updateLinks);
   </script>
 </body>
 </html>
