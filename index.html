@@ -6,7 +6,9 @@
   <title>Prenotazioni — Casa Luigi</title>
 
   <!-- PayPal SDK (Parte 1) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+</script>
 
   <style>
     body {
@@ -114,13 +116,12 @@
     <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia su WhatsApp</a>
     <a id="emailBtn" class="button email" target="_blank">Invia tramite Email</a>
 
-    <div class="paypal-container" id="paypal-container-EN4V2C9NXVMBE"></div>
-    <script>
-      paypal.HostedButtons({
-        hostedButtonId: "EN4V2C9NXVMBE",
-      }).render("#paypal-container-EN4V2C9NXVMBE");
-    </script>
-
+<div id="paypal-container-KNC739BU5PTYJ"></div>
+<script>
+  paypal.HostedButtons({
+    hostedButtonId: "KNC739BU5PTYJ",
+  }).render("#paypal-container-KNC739BU5PTYJ")
+</script>
     <footer>
       <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
     </footer>
@@ -177,3 +178,4 @@
   </script>
 </body>
 </html>
+
