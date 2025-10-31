@@ -1,179 +1,228 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prenotazioni — Casa Luigi</title>
 
-  <!-- PayPal SDK (Parte 1) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet">
 
   <style>
     body {
-      font-family: 'Inter', Arial, sans-serif;
-      background: linear-gradient(135deg, #f7f9fc, #e3eeff);
-      margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f9fc;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
     }
 
     .container {
-      background: white;
+      background: #fff;
       border-radius: 16px;
+      padding: 20px;
+      max-width: 700px;
+      width: 100%;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      padding: 32px;
-      max-width: 400px;
-      width: 90%;
       text-align: center;
     }
 
-    img.logo {
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      object-fit: cover;
-      max-height: 200px;
-    }
+    h1 { margin-top: 10px; }
 
-    h1 {
-      color: #1a1a1a;
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
-    }
-
-    p {
-      color: #555;
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    label {
-      display: block;
-      font-weight: 600;
-      color: #333;
-      margin-top: 1rem;
-      text-align: left;
-    }
-
-    input[type="date"] {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 0.95rem;
-    }
+    #calendar { margin-top: 20px; }
 
     .button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin-top: 16px;
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #25D366;
       border: none;
       border-radius: 8px;
-      color: white;
-      font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s ease;
       text-decoration: none;
     }
 
-    .whatsapp { background-color: #25D366; }
-    .whatsapp:hover { background-color: #1ebd5a; }
+    .button:hover { background-color: #1ebd5a; }
 
-    .email { background-color: #0078D4; }
-    .email:hover { background-color: #005fa3; }
-
-    .paypal-container {
-      margin-top: 20px;
+    /* --- SLIDER --- */
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
-    footer {
-      margin-top: 20px;
-      font-size: 0.8rem;
-      color: #888;
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 1s ease-in-out;
+    }
+
+    .slides img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    /* --- PALLINI NAVIGAZIONE --- */
+    .dots {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 5px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background-color: #333;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="2024-04-24.webp" alt="Casa Luigi" class="logo">
 
-    <h1>Prenota il tuo soggiorno</h1>
-    <p>Compila le date e contattami direttamente per confermare la disponibilità.</p>
-
-    <label for="checkin">Data di Check-in</label>
-    <input type="date" id="checkin" required>
-
-    <label for="checkout">Data di Check-out</label>
-    <input type="date" id="checkout" required>
-
-    <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia su WhatsApp</a>
-    <a id="emailBtn" class="button email" target="_blank">Invia tramite Email</a>
-
-    <div class="paypal-container" id="paypal-container-EN4V2C9NXVMBE"></div>
-    <script>
-      paypal.HostedButtons({
-        hostedButtonId: "EN4V2C9NXVMBE",
-      }).render("#paypal-container-EN4V2C9NXVMBE");
-    </script>
-
-    <footer>
-      <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
-    </footer>
+  <!-- SLIDER IMMAGINI -->
+  <div class="slider" id="slider">
+    <div class="slides" id="slides">
+      <img src="img/foto1.jpg" alt="Casa Luigi 1">
+      <img src="img/foto2.jpg" alt="Casa Luigi 2">
+      <img src="img/foto3.jpg" alt="Casa Luigi 3">
+      <img src="img/foto4.jpg" alt="Casa Luigi 4">
+    </div>
   </div>
 
+  <!-- PALLINI NAVIGAZIONE -->
+  <div class="dots" id="dots"></div>
+
+  <div class="container">
+    <h1>Prenota il tuo soggiorno</h1>
+    <p>Seleziona le date disponibili nel calendario e invia la tua richiesta direttamente su WhatsApp.</p>
+
+    <div id="calendar"></div>
+
+    <a id="whatsappBtn" class="button" target="_blank">Invia richiesta su WhatsApp</a>
+  </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.min.js"></script>
+
   <script>
+    const phone = "393382661198";
+    let checkin = null;
+    let checkout = null;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const calendarEl = document.getElementById('calendar');
+      const today = new Date().toISOString().split('T')[0]; // data odierna (YYYY-MM-DD)
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        selectable: true,
+        selectMirror: true,
+        locale: 'it',
+        validRange: { start: today }, // blocca date precedenti
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth'
+        },
+        select: function(info) {
+          const start = info.startStr;
+          const end = info.endStr;
+
+          if (end <= start) {
+            alert("La data di check-out deve essere successiva al check-in.");
+            return;
+          }
+
+          checkin = start;
+          checkout = end;
+
+          alert(`Hai selezionato dal ${checkin} al ${checkout}`);
+        }
+      });
+
+      calendar.render();
+
+      /* --- SLIDER AUTOMATICO E MANUALE --- */
+      const slides = document.getElementById('slides');
+      const dotsContainer = document.getElementById('dots');
+      const totalSlides = slides.children.length;
+      let index = 0;
+      let slideInterval;
+
+      // Crea i pallini
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+      }
+
+      const dots = document.querySelectorAll('.dot');
+
+      function goToSlide(i) {
+        index = i;
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        updateDots();
+        resetInterval();
+      }
+
+      function updateDots() {
+        dots.forEach(dot => dot.classList.remove('active'));
+        dots[index].classList.add('active');
+      }
+
+      function nextSlide() {
+        index = (index + 1) % totalSlides;
+        slides.style.transform = `translateX(-${index * 100}%)`;
+        updateDots();
+      }
+
+      function startInterval() {
+        slideInterval = setInterval(nextSlide, 3000);
+      }
+
+      function resetInterval() {
+        clearInterval(slideInterval);
+        startInterval();
+      }
+
+      startInterval();
+    });
+
+    // Bottone WhatsApp
     const whatsappBtn = document.getElementById('whatsappBtn');
-    const emailBtn = document.getElementById('emailBtn');
-    const checkinInput = document.getElementById('checkin');
-    const checkoutInput = document.getElementById('checkout');
-
-    const phone = '393382661198';
-    const email = 'luigi.caparello@gmail.com';
-
-    // Imposta il minimo per il check-in e check-out
-    const today = new Date().toISOString().split('T')[0];
-    checkinInput.min = today;
-    checkoutInput.min = today;
-
-    function formatDate(d) {
-      if (!d) return '';
-      const parts = d.split('-');
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-
-    function updateLinks() {
-      const checkin = checkinInput.value;
-      const checkout = checkoutInput.value;
-      if(!checkin || !checkout) return;
-
-      if(checkout < checkin) {
-        alert("La data di check-out deve essere successiva al check-in.");
+    whatsappBtn.addEventListener('click', function() {
+      if (!checkin || !checkout) {
+        alert("Seleziona prima le date nel calendario.");
         return;
       }
 
-      const message = `Ciao Luigi, vorrei prenotare dal ${formatDate(checkin)} al ${formatDate(checkout)}.`;
-      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      emailBtn.href = `mailto:${email}?subject=Richiesta%20prenotazione&body=${encodeURIComponent(message)}`;
-    }
-
-    // Aggiorna i min per il check-out quando cambia il check-in
-    checkinInput.addEventListener('change', () => {
-      const checkin = checkinInput.value;
-      if(checkin) {
-        checkoutInput.min = checkin;
-        if(checkoutInput.value && checkoutInput.value < checkin) {
-          checkoutInput.value = checkin;
-        }
-      }
-      updateLinks();
+      const message = `Ciao Luigi, vorrei prenotare dal ${checkin} al ${checkout}.`;
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
     });
-
-    checkoutInput.addEventListener('change', updateLinks);
   </script>
 </body>
 </html>
