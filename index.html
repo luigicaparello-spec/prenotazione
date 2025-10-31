@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prenotazioni — Casa Luigi</title>
 
   <!-- FullCalendar CSS -->
@@ -21,91 +21,152 @@
 
     .container {
       background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      max-width: 900px;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 700px;
       width: 100%;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       text-align: center;
     }
 
-    h1 { margin: 8px 0; }
+    h1 {
+      margin-top: 10px;
+    }
 
-    /* forziamo altezza visibile al calendario */
     #calendar {
-      margin-top: 16px;
-      min-height: 520px;
+      margin-top: 20px;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #25D366;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .button:hover {
+      background-color: #1ebd5a;
+    }
+
+    /* --- SLIDER --- */
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 700px;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 1s ease-in-out;
+    }
+
+    .slides img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Prenotazioni — Casa Luigi</h1>
-    <p>Seleziona le date disponibili nel calendario.</p>
 
-    <!-- calendario -->
-    <div id="calendar">Caricamento calendario...</div>
-
-    <p id="debug" style="color:#b00; margin-top:12px; display:none;"></p>
+  <!-- SLIDER IMMAGINI -->
+  <div class="slider" id="slider">
+    <div class="slides" id="slides">
+      <img src="img/foto1.jpg" alt="Casa Luigi 1">
+      <img src="img/foto2.jpg" alt="Casa Luigi 2">
+      <img src="img/foto3.jpg" alt="Casa Luigi 3">
+      <img src="img/foto4.jpg" alt="Casa Luigi 4">
+    </div>
   </div>
 
-  <!-- FullCalendar bundle (core + plugins) -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <div class="container">
+    <h1>Prenota il tuo soggiorno</h1>
+    <p>Seleziona le date disponibili nel calendario e invia la tua richiesta direttamente su WhatsApp.</p>
+
+    <div id="calendar"></div>
+
+    <a id="whatsappBtn" class="button" target="_blank">Invia richiesta su WhatsApp</a>
+  </div>
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.min.js"></script>
 
   <script>
-    // Debug helper
-    function showDebug(msg) {
-      console.log(msg);
-      const el = document.getElementById('debug');
-      el.style.display = 'block';
-      el.textContent = msg;
-    }
+    const phone = "393382661198";
+    let checkin = null;
+    let checkout = null;
 
     document.addEventListener('DOMContentLoaded', function() {
-      // Controlli preliminari
-      if (!window.FullCalendar) {
-        showDebug('Errore: FullCalendar non è stato caricato. Controlla la connessione CDN.');
-        return;
-      }
       const calendarEl = document.getElementById('calendar');
-      if (!calendarEl) {
-        showDebug('Errore: elemento #calendar non trovato nella pagina.');
+      const today = new Date().toISOString().split('T')[0]; // data odierna (YYYY-MM-DD)
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        selectable: true,
+        selectMirror: true,
+        locale: 'it',
+        validRange: { start: today }, // blocca date precedenti
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth'
+        },
+        select: function(info) {
+          const start = info.startStr;
+          const end = info.endStr;
+
+          // Controlla che il check-out sia dopo il check-in
+          if (end <= start) {
+            alert("La data di check-out deve essere successiva al check-in.");
+            return;
+          }
+
+          checkin = start;
+          checkout = end;
+
+          alert(`Hai selezionato dal ${checkin} al ${checkout}`);
+        }
+      });
+
+      calendar.render();
+
+      // Slider automatico immagini
+      const slides = document.getElementById('slides');
+      const totalSlides = slides.children.length;
+      let index = 0;
+
+      setInterval(() => {
+        index = (index + 1) % totalSlides;
+        slides.style.transform = `translateX(-${index * 100}%)`;
+      }, 3000);
+    });
+
+    // Gestione bottone WhatsApp
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    whatsappBtn.addEventListener('click', function() {
+      if (!checkin || !checkout) {
+        alert("Seleziona prima le date nel calendario.");
         return;
       }
 
-      try {
-        const today = new Date().toISOString().split('T')[0];
-
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          selectable: true,
-          selectMirror: true,
-          locale: 'it',
-          validRange: { start: today }, // blocca date precedenti
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth'
-          },
-          select: function(info) {
-            const start = info.startStr;
-            const end = info.endStr;
-            if (end <= start) {
-              alert("La data di check-out deve essere successiva al check-in.");
-              return;
-            }
-            alert(`Hai selezionato dal ${start} al ${end}`);
-          },
-          // events: [], // eventualmente qui carichi eventi o integri calendar API
-          height: 520 // forza altezza fissa per evitare problemi di rendering
-        });
-
-        calendar.render();
-        console.log('FullCalendar renderizzato correttamente.');
-      } catch (err) {
-        showDebug('Errore durante l\'inizializzazione del calendario: ' + err.message);
-        console.error(err);
-      }
+      const message = `Ciao Luigi, vorrei prenotare dal ${checkin} al ${checkout}.`;
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
     });
   </script>
 </body>
