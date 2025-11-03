@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prenotazioni — Casa Luigi</title>
 
-  <!-- PayPal SDK (Parte 1) -->
-<script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
-</script>
+  <!-- PayPal SDK -->
+  <script 
+    src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+  </script>
 
   <style>
     body {
@@ -32,14 +32,30 @@
       text-align: center;
     }
 
-    img.logo {
+    /* --- SLIDER --- */
+    .slider {
+      position: relative;
       width: 100%;
+      max-height: 220px;
+      overflow: hidden;
       border-radius: 12px;
       margin-bottom: 20px;
-      object-fit: cover;
-      max-height: 200px;
     }
 
+    .slides {
+      display: flex;
+      transition: transform 0.8s ease-in-out;
+      width: 400%; /* 4 immagini */
+    }
+
+    .slide {
+      width: 100%;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    /* --- TESTO E BOTTONI --- */
     h1 {
       color: #1a1a1a;
       font-size: 1.6rem;
@@ -98,11 +114,29 @@
       font-size: 0.8rem;
       color: #888;
     }
+
+    footer a {
+      color: #0078D4;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="2024-04-24.webp" alt="Casa Luigi" class="logo">
+
+    <!-- SLIDER FOTO -->
+    <div class="slider">
+      <div class="slides">
+        <img src="foto1.webp" alt="Casa Luigi 1" class="slide active">
+        <img src="foto2.avif" alt="Casa Luigi 2" class="slide">
+        <img src="foto3.avif" alt="Casa Luigi 3" class="slide">
+        <img src="foto4.avif" alt="Casa Luigi 4" class="slide">
+      </div>
+    </div>
 
     <h1>Prenota il tuo soggiorno</h1>
     <p>Compila le date e contattami direttamente per confermare la disponibilità.</p>
@@ -116,18 +150,24 @@
     <a id="whatsappBtn" class="button whatsapp" target="_blank">Invia su WhatsApp</a>
     <a id="emailBtn" class="button email" target="_blank">Invia tramite Email</a>
 
-<div id="paypal-container-KNC739BU5PTYJ"></div>
-<script>
-  paypal.HostedButtons({
-    hostedButtonId: "KNC739BU5PTYJ",
-  }).render("#paypal-container-KNC739BU5PTYJ")
-</script>
+    <div id="paypal-container-KNC739BU5PTYJ"></div>
+    <script>
+      paypal.HostedButtons({
+        hostedButtonId: "KNC739BU5PTYJ",
+      }).render("#paypal-container-KNC739BU5PTYJ")
+    </script>
+
     <footer>
-      <p>© 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a></p>
+      <p>© 2025 Casa Luigi — 
+        <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">
+          Visualizza su Google Maps
+        </a>
+      </p>
     </footer>
   </div>
 
   <script>
+    // --- BOTTONI WHATSAPP / EMAIL ---
     const whatsappBtn = document.getElementById('whatsappBtn');
     const emailBtn = document.getElementById('emailBtn');
     const checkinInput = document.getElementById('checkin');
@@ -136,7 +176,7 @@
     const phone = '393382661198';
     const email = 'luigi.caparello@gmail.com';
 
-    // Imposta il minimo per il check-in e check-out
+    // Imposta il minimo per il check-in e check-out (oggi)
     const today = new Date().toISOString().split('T')[0];
     checkinInput.min = today;
     checkoutInput.min = today;
@@ -162,7 +202,6 @@
       emailBtn.href = `mailto:${email}?subject=Richiesta%20prenotazione&body=${encodeURIComponent(message)}`;
     }
 
-    // Aggiorna i min per il check-out quando cambia il check-in
     checkinInput.addEventListener('change', () => {
       const checkin = checkinInput.value;
       if(checkin) {
@@ -175,7 +214,18 @@
     });
 
     checkoutInput.addEventListener('change', updateLinks);
+
+    // --- SLIDER AUTOMATICO ---
+    const slides = document.querySelectorAll('.slide');
+    let currentIndex = 0;
+
+    function showNextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      const offset = -currentIndex * 100;
+      document.querySelector('.slides').style.transform = `translateX(${offset}%)`;
+    }
+
+    setInterval(showNextSlide, 4000); // cambia immagine ogni 4s
   </script>
 </body>
 </html>
-
