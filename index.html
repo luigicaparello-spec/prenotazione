@@ -5,9 +5,294 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prenotazioni — Casa Luigi</title>
 
-  <!-- FullCalendar bundle (core + plugins) -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <!-- PayPal SDK -->
+  <script 
+    src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+  </script>
+
+  <!-- Google Translate -->
+  <meta name="google-translate-customization" content="YOUR_KEY_HERE">
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #f7f9fc, #e3eeff);
+      --card: #fff;
+      --muted: #666;
+      --accent: #0078D4;
+      --success: #25D366;
+      --radius: 12px;
+      --maxw: 900px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg);
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: var(--maxw);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px 32px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Google Translate position */
+    #google_translate_element {
+      text-align: right;
+      margin-bottom: 10px;
+    }
+
+    .slider {
+      width: 100%;
+      height: 280px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform .9s ease;
+    }
+
+    .slide {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0 14px 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .dot.active {
+      background: var(--accent);
+      transform: scale(1.1);
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin: 8px 0;
+      color: #111;
+      text-align: center;
+    }
+
+    p.lead {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+    }
+
+    label.small {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 0.95rem;
+      box-sizing: border-box;
+    }
+
+    .pricing {
+      margin-top: 20px;
+      background: linear-gradient(180deg, #fbfdff, #f3f8ff);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: left;
+      color: #123;
+    }
+
+    .pricing .row-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .pricing .muted {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .summary {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #fff;
+      border: 1px solid #eef4ff;
+    }
+
+    .total {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #111;
+    }
+
+    .buttons {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px;
+      border-radius: 10px;
+      color: #fff;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .btn.whatsapp { background: var(--success); }
+    .btn.email { background: var(--accent); }
+
+    .note {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    footer {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 20px; }
+      .card { padding: 18px; }
+      .slider { height: 200px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div id="google_translate_element"></div>
+
+    <div class="card">
+
+      <!-- SLIDER -->
+      <div class="slider" id="slider">
+        <div class="slides" id="slides">
+          <img class="slide" src="foto1.webp" alt="Casa Luigi 1">
+          <img class="slide" src="foto2.avif" alt="Casa Luigi 2">
+          <img class="slide" src="foto3.avif" alt="Casa Luigi 3">
+          <img class="slide" src="foto4.avif" alt="Casa Luigi 4">
+        </div>
+      </div>
+      <div class="dots" id="dots"></div>
+
+      <h1>Prenota il tuo soggiorno</h1>
+      <p class="lead">Controlla le date, scegli il numero di ospiti e visualizza il prezzo stimato. Minimo 2 notti.</p>
+
+      <!-- date + guests -->
+      <div class="controls">
+        <div class="col">
+          <label class="small" for="checkin">Check-in</label>
+          <input id="checkin" type="date" />
+        </div>
+        <div class="col">
+          <label class="small" for="checkout">Check-out</label>
+          <input id="checkout" type="date" />
+        </div>
+        <div class="col">
+          <label class="small" for="guests">Ospiti</label>
+          <select id="guests">
+            <option value="1">1 persona</option>
+            <option value="2">2 persone</option>
+            <option value="3">3 persone</option>
+            <option value="4">4 persone</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- pricing -->
+      <div class="pricing">
+        <div style="font-weight:700">Tariffe stagionali (per notte)</div>
+        <div class="row-item"><div>1 persona</div><div><strong>€75</strong></div></div>
+        <div class="row-item"><div>2 persone</div><div><strong>€87</strong></div></div>
+        <div class="row-item"><div>3–4 persone</div><div><strong>€110</strong></div></div>
+
+        <hr style="border:none;border-top:1px dashed #e2e8f0;margin:10px 0">
+
+        <div class="muted">Condizioni di soggiorno</div>
+        <div class="muted" style="margin-top:6px">
+          • Minimo <strong>2 notti</strong><br>
+          • Sconto <strong>13%</strong> da 7 notti<br>
+          • Sconto <strong>43%</strong> da 30 notti<br>
+          *Oltre 1 mese serve un contratto, in base alla durata e ai requisiti.
+        </div>
+      </div>
+
+      <!-- summary -->
+      <div class="summary" id="summary">
+        <div style="display:flex;justify-content:space-between"><div class="muted">Notti</div><div id="nights">–</div></div>
+        <div style="display:flex;justify-content:space-between"><div class="muted">Tariffa</div><div id="nightRate">–</div></div>
+        <div style="display:flex;justify-content:space-between"><div class="muted">Sconto</div><div id="discount">–</div></div>
+        <div style="display:flex;justify-content:space-between; margin-top:8px;"><div class="muted">Totale</div><div class="total" id="total">–</div></div>
+      </div>
+
+      <div class="buttons">
+        <a id="whatsappBtn" class="btn whatsapp" target="_blank" href="#">Contattami su WhatsApp</a>
+        <a id="emailBtn" class="btn email" target="_blank" href="#">Invia richiesta via Email</a>
+        <div id="paypal-container-KNC739BU5PTYJ"></div>
+      </div>
+
+      <p class="note">
+        <strong>Nota:</strong> per soggiorni superiori a un mese verrà richiesto un contratto a canone concordato.
+      </p>
+
+      <footer>
+        © 2025 Casa Luigi — 
+        <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Google Maps</a>
+      </footer>
+    </div>
+  </div>
 
   <!-- Google Translate -->
   <script type="text/javascript">
@@ -21,163 +306,16 @@
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-  <!-- PayPal JS (client-id demo sb, sostituisci con il tuo client-id) -->
-  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
-
-  <style>
-    :root{
-      --bg: linear-gradient(135deg,#f7f9fc,#e3eeff);
-      --card:#fff;
-      --muted:#666;
-      --accent:#0078D4;
-      --success:#25D366;
-      --radius:12px;
-      --maxw:900px;
-    }
-    html,body{height:100%;margin:0;}
-    body{
-      font-family: Inter, Arial, sans-serif;
-      background:var(--bg);
-      display:flex;
-      justify-content:center;
-      padding:30px;
-    }
-    .page{width:100%;max-width:var(--maxw);}
-    #google_translate_element{ text-align:right; margin-bottom:8px; }
-    .card{
-      background:var(--card);
-      border-radius:16px;
-      padding:20px;
-      box-shadow:0 8px 30px rgba(0,0,0,0.08);
-      overflow:hidden;
-    }
-
-    /* slider */
-    .slider { width:100%; height:280px; border-radius:var(--radius); overflow:hidden; margin-bottom:16px; position:relative;}
-    .slides { display:flex; width:100%; height:100%; transition:transform .9s ease; }
-    .slide { width:100%; height:100%; object-fit:cover; flex-shrink:0; }
-
-    .dots { display:flex; justify-content:center; gap:8px; margin:10px 0 14px 0; }
-    .dot { width:10px;height:10px;border-radius:50%;background:#ccc;cursor:pointer;transition:all .2s;}
-    .dot.active{ background:var(--accent); transform:scale(1.1); }
-
-    h1{ text-align:center; color:#111; margin:8px 0 4px; }
-    p.lead { text-align:center; color:var(--muted); margin-bottom:18px; }
-
-    .layout {
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:20px;
-      align-items:start;
-    }
-
-    /* calendar area */
-    #calendar { background:#fff; border-radius:10px; padding:10px; min-height:480px; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
-
-    /* side panel */
-    .panel {
-      background:linear-gradient(180deg,#fbfdff,#f3f8ff);
-      border-radius:10px;
-      padding:14px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.04);
-    }
-
-    label { display:block; font-size:0.9rem; color:#333; margin-top:8px; font-weight:600; }
-    input.readonly {
-      width:100%; padding:10px; border-radius:8px; border:1px solid #d6d6d6; font-size:0.95rem; background:#fff;
-    }
-
-    select { width:100%; padding:10px; border-radius:8px; border:1px solid #d6d6d6; font-size:0.95rem; }
-
-    .summary { margin-top:12px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eef4ff; }
-    .summary .row { display:flex; justify-content:space-between; margin:6px 0; color:#333; }
-    .total { font-weight:700; color:#111; font-size:1.05rem; }
-
-    .buttons { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
-    .btn { padding:11px 12px; border-radius:10px; text-align:center; text-decoration:none; color:#fff; font-weight:700; display:block; }
-    .btn.whatsapp{ background:var(--success); }
-    .btn.email{ background:var(--accent); }
-
-    .paypal-container { margin-top:8px; }
-
-    .note { margin-top:10px; font-size:0.9rem; color:var(--muted); }
-
-    @media (max-width:980px){
-      .layout{ grid-template-columns: 1fr; }
-      #calendar{ min-height:420px; }
-      .slider{ height:200px; }
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <div id="google_translate_element"></div>
-
-    <div class="card">
-
-      <!-- slider -->
-      <div class="slider" aria-hidden="false">
-        <div class="slides" id="slides">
-          <img class="slide" src="foto1.webp" alt="Casa Luigi 1">
-          <img class="slide" src="foto2.avif" alt="Casa Luigi 2">
-          <img class="slide" src="foto3.avif" alt="Casa Luigi 3">
-          <img class="slide" src="foto4.avif" alt="Casa Luigi 4">
-        </div>
-      </div>
-      <div class="dots" id="dots"></div>
-
-      <h1>Prenota il tuo soggiorno</h1>
-      <p class="lead">Seleziona le date direttamente nel calendario, poi conferma numero di ospiti e procedi al pagamento o contatto.</p>
-
-      <div class="layout">
-        <!-- left: calendar -->
-        <div id="calendar"></div>
-
-        <!-- right: panel -->
-        <div class="panel">
-          <label>Check-in</label>
-          <input id="checkin_display" class="readonly" readonly placeholder="Seleziona una data dal calendario">
-
-          <label>Check-out</label>
-          <input id="checkout_display" class="readonly" readonly placeholder="Seleziona una data dal calendario">
-
-          <label>Ospiti</label>
-          <select id="guests">
-            <option value="1">1 persona</option>
-            <option value="2">2 persone</option>
-            <option value="3">3 persone</option>
-            <option value="4">4 persone</option>
-          </select>
-
-          <div class="summary" aria-live="polite">
-            <div class="row"><div>Notti</div><div id="nights">–</div></div>
-            <div class="row"><div>Tariffa / notte</div><div id="nightRate">–</div></div>
-            <div class="row"><div>Sconto</div><div id="discount">–</div></div>
-            <div class="row" style="border-top:1px dashed #eef4ff; padding-top:8px;"><div class="muted">Totale</div><div class="total" id="total">–</div></div>
-          </div>
-
-          <div class="buttons">
-            <a id="whatsappBtn" class="btn whatsapp" href="#" target="_blank">Richiesta via WhatsApp</a>
-            <a id="emailBtn" class="btn email" href="#" target="_blank">Invia richiesta via Email</a>
-            <div class="paypal-container" id="paypal-container"></div>
-          </div>
-
-          <p class="note">Minimo 2 notti. Sconto 13% ≥ 7 notti, 43% ≥ 30 notti. Per affitti >1 mese si richiede contratto.</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
+  <!-- Script di calcolo e slider -->
   <script>
-    // PRICING logic
-    const rates = {1:75, 2:87, "3-4":110};
-    const discount7 = 0.13, discount30 = 0.43, minNights = 2;
+    const rates = { 1: 75, 2: 87, "3-4": 110 };
+    const discount7 = 0.13;
+    const discount30 = 0.43;
+    const minNights = 2;
 
-    // elements
-    const checkinDisplay = document.getElementById('checkin_display');
-    const checkoutDisplay = document.getElementById('checkout_display');
-    const guestsSel = document.getElementById('guests');
+    const checkin = document.getElementById('checkin');
+    const checkout = document.getElementById('checkout');
+    const guests = document.getElementById('guests');
     const nightsEl = document.getElementById('nights');
     const nightRateEl = document.getElementById('nightRate');
     const discountEl = document.getElementById('discount');
@@ -185,175 +323,53 @@
     const whatsappBtn = document.getElementById('whatsappBtn');
     const emailBtn = document.getElementById('emailBtn');
 
-    let selectedCheckin = null;
-    let selectedCheckout = null;
-    let lastTotal = 0;
+    const today = new Date().toISOString().split('T')[0];
+    checkin.min = today;
+    checkout.min = today;
 
-    function formatDateISOToIT(iso) {
-      if(!iso) return '';
-      const parts = iso.split('-');
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    function parseDate(s){ return s ? new Date(s + 'T00:00:00') : null; }
+    function daysBetween(a,b){ return (b - a) / (1000*60*60*24); }
+    function getNightlyRate(gc){ return gc == 1 ? rates[1] : gc == 2 ? rates[2] : rates["3-4"]; }
+
+    function compute(){
+      const a=parseDate(checkin.value), b=parseDate(checkout.value), gc=parseInt(guests.value);
+      if(!a||!b){ nightsEl.textContent='–'; nightRateEl.textContent='–'; discountEl.textContent='–'; totalEl.textContent='–'; return;}
+      let nights=daysBetween(a,b);
+      if(nights<1){ totalEl.textContent='Check-out deve essere successivo'; return;}
+      nightsEl.textContent = nights < minNights ? `${nights} (minimo ${minNights})` : nights;
+      const rate=getNightlyRate(gc), subtotal=rate*nights;
+      let appliedDiscount=0;
+      if(nights>=30) appliedDiscount=discount30; else if(nights>=7) appliedDiscount=discount7;
+      const discountAmt=subtotal*appliedDiscount, total=subtotal-discountAmt;
+      nightRateEl.textContent=`€${rate.toFixed(2)}`;
+      discountEl.textContent=appliedDiscount?`${(appliedDiscount*100).toFixed(0)}% (-€${discountAmt.toFixed(2)})`:'Nessuno';
+      totalEl.textContent=`€${total.toFixed(2)}`;
     }
 
-    function getRate(guests) {
-      if(guests === 1) return rates[1];
-      if(guests === 2) return rates[2];
-      return rates["3-4"];
-    }
+    checkin.addEventListener('change', compute);
+    checkout.addEventListener('change', compute);
+    guests.addEventListener('change', compute);
 
-    function computeAndRender() {
-      if(!selectedCheckin || !selectedCheckout) {
-        nightsEl.textContent = '–';
-        nightRateEl.textContent = '–';
-        discountEl.textContent = '–';
-        totalEl.textContent = '–';
-        whatsappBtn.href = '#';
-        emailBtn.href = '#';
-        lastTotal = 0;
-        return;
-      }
+    compute();
 
-      const a = new Date(selectedCheckin + 'T00:00:00');
-      const b = new Date(selectedCheckout + 'T00:00:00');
-      const nights = Math.round((b - a) / (1000*60*60*24));
-      if(nights <= 0) {
-        nightsEl.textContent = '0';
-        totalEl.textContent = 'Seleziona check-out successivo';
-        return;
-      }
-      nightsEl.textContent = nights;
-
-      const guests = parseInt(guestsSel.value,10);
-      const rate = getRate(guests);
-      nightRateEl.textContent = `€ ${rate.toFixed(2)}`;
-
-      let subtotal = rate * nights;
-      let applied = 0;
-      if(nights >= 30) applied = discount30;
-      else if(nights >= 7) applied = discount7;
-      const discountAmt = subtotal * applied;
-      const total = subtotal - discountAmt;
-
-      discountEl.textContent = applied ? `${(applied*100).toFixed(0)}% (-€ ${discountAmt.toFixed(2)})` : 'Nessuno';
-      totalEl.textContent = `€ ${total.toFixed(2)}`;
-      lastTotal = total;
-
-      // update contact links
-      const msg = `Ciao Luigi, vorrei prenotare dal ${formatDateISOToIT(selectedCheckin)} al ${formatDateISOToIT(selectedCheckout)} per ${guests} persona/e. Totale stimato: € ${total.toFixed(2)}. È disponibile?`;
-      const phone = '393382661198';
-      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&body=${encodeURIComponent(msg)}`;
-    }
-
-    guestsSel.addEventListener('change', computeAndRender);
-
-    // FullCalendar initialization
-    document.addEventListener('DOMContentLoaded', function() {
-      if(!window.FullCalendar) {
-        console.error('FullCalendar non caricato.');
-        return;
-      }
-
-      const today = new Date().toISOString().split('T')[0];
-      const calendarEl = document.getElementById('calendar');
-
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        selectable: true,
-        selectMirror: true,
-        locale: 'it',
-        validRange: { start: today },
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek'
-        },
-        height: 'auto',
-        select: function(info) {
-          // info.startStr (inclusive) - info.endStr (exclusive)
-          // Ensure checkout > checkin and nights >= minNights
-          const checkin = info.startStr;
-          const checkout = info.endStr;
-          const nights = Math.round((new Date(checkout+'T00:00:00') - new Date(checkin+'T00:00:00'))/(1000*60*60*24));
-          if(nights < minNights) {
-            alert(`Il soggiorno minimo è di ${minNights} notti.`);
-            return;
-          }
-          selectedCheckin = checkin;
-          selectedCheckout = checkout;
-
-          checkinDisplay.value = formatDateISOToIT(checkin);
-          checkoutDisplay.value = formatDateISOToIT(checkout);
-
-          computeAndRender();
-        }
-      });
-
-      calendar.render();
-
-      // render PayPal button (uses lastTotal)
-      renderPayPalButton();
-    });
-
-    // PayPal button rendering with dynamic amount
-    function renderPayPalButton() {
-      const container = document.getElementById('paypal-container');
-      container.innerHTML = ''; // clear any previous
-
-      if(!window.paypal) {
-        console.warn('PayPal SDK non caricato.');
-        return;
-      }
-
-      paypal.Buttons({
-        style: { color: 'gold', shape:'pill', label:'paypal' },
-        createOrder: function(data, actions) {
-          if(!selectedCheckin || !selectedCheckout || lastTotal <= 0) {
-            alert('Seleziona date valide e numero di ospiti prima di pagare.');
-            return;
-          }
-          // create order with dynamic amount
-          return actions.order.create({
-            purchase_units: [{
-              amount: { value: lastTotal.toFixed(2), currency_code: 'EUR' },
-              description: `Prenotazione Casa Luigi dal ${selectedCheckin} al ${selectedCheckout}`
-            }]
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            alert('Pagamento completato! Grazie — ' + (details.payer.name.given_name || ''));
-            // optionally: here you could redirect or call your backend to record booking
-          });
-        },
-        onError: function(err) {
-          console.error('PayPal error', err);
-          alert('Errore durante il pagamento. Riprovare.');
-        }
-      }).render('#paypal-container');
-    }
-
-    // Simple slider with dots
+    // Slider automatico
     (function(){
-      const slides = document.getElementById('slides');
-      const slideEls = document.querySelectorAll('.slide');
-      const dotsContainer = document.getElementById('dots');
-      const total = slideEls.length;
-      let idx = 0, timer;
-      // create dots
+      const slides=document.getElementById('slides');
+      const slideEls=document.querySelectorAll('.slide');
+      const dotsContainer=document.getElementById('dots');
+      const total=slideEls.length; let idx=0;
       for(let i=0;i<total;i++){
-        const d = document.createElement('div');
-        d.className = 'dot' + (i===0 ? ' active':'' );
-        d.dataset.index = i;
-        d.addEventListener('click', ()=>{ idx = i; show(); reset(); });
+        const d=document.createElement('div');
+        d.className='dot'+(i===0?' active':'');
+        d.onclick=()=>{idx=i;show();};
         dotsContainer.appendChild(d);
       }
-      const dots = document.querySelectorAll('.dot');
-      function show(){ slides.style.transform = `translateX(-${idx*100}%)`; dots.forEach((el,i)=>el.classList.toggle('active',i===idx)); }
-      function next(){ idx = (idx+1) % total; show(); }
-      function start(){ timer = setInterval(next,3500); }
-      function reset(){ clearInterval(timer); start(); }
-      start();
+      const dots=document.querySelectorAll('.dot');
+      function show(){
+        slides.style.transform=`translateX(-${idx*100}%)`;
+        dots.forEach((el,i)=>el.classList.toggle('active',i===idx));
+      }
+      setInterval(()=>{idx=(idx+1)%total;show();},3500);
     })();
   </script>
 </body>
