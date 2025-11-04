@@ -406,15 +406,18 @@
         <div style="display:flex;justify-content:space-between"><div class="muted">Notti</div><div id="nights">–</div></div>
         <div style="display:flex;justify-content:space-between"><div class="muted">Tariffa per notte</div><div id="nightRate">–</div></div>
         <div style="display:flex;justify-content:space-between"><div class="muted">Sconto applicato</div><div id="discount">–</div></div>
-        <div style="display:flex;justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid #eee;"><div class="muted">Totale stimato</div><div class="total" id="total">–</div></div>
+        <div style="display:flex;justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid #eee;"><div class="muted">Totale base</div><div class="total" id="total">–</div></div>
+        <div style="display:flex;justify-content:space-between; margin-top:6px;"><div class="muted">Commissione PayPal (3.5%)</div><div id="paypalFee">–</div></div>
+        <div style="display:flex;justify-content:space-between; margin-top:8px; padding-top:8px; border-top:2px solid #0078D4;"><div style="font-weight:700; color:#111;">Totale con PayPal</div><div class="total" style="color:#0078D4;" id="totalWithPaypal">–</div></div>
       </div>
 
       <!-- buttons -->
       <div class="buttons">
         <a id="whatsappBtn" class="btn whatsapp" target="_blank" href="#">Contattami su WhatsApp</a>
         <a id="emailBtn" class="btn email" target="_blank" href="#">Invia richiesta via Email</a>
-        <div class="paypal-container" id="paypal-container-KNC739BU5PTYJ"></div>
       </div>
+      
+      <div class="paypal-container" id="paypal-container-KNC739BU5PTYJ"></div>
 
       <div class="note">
         <strong>Nota:</strong> per soggiorni superiori a un mese verrà richiesto di sottoscrivere un contratto concordato; il prezzo finale potrà variare in base alla durata e ai requisiti necessari.
@@ -443,6 +446,7 @@
     const discount7 = 0.13;
     const discount30 = 0.43;
     const minNights = 2;
+    const paypalFee = 0.035; // 3.5%
 
     // elementi
     const checkin = document.getElementById('checkin');
@@ -452,6 +456,8 @@
     const nightRateEl = document.getElementById('nightRate');
     const discountEl = document.getElementById('discount');
     const totalEl = document.getElementById('total');
+    const paypalFeeEl = document.getElementById('paypalFee');
+    const totalWithPaypalEl = document.getElementById('totalWithPaypal');
     const whatsappBtn = document.getElementById('whatsappBtn');
     const emailBtn = document.getElementById('emailBtn');
 
@@ -478,13 +484,23 @@
       const a = parseDate(checkin.value);
       const b = parseDate(checkout.value);
       const gc = parseInt(guests.value,10);
-      if(!a || !b){ nightsEl.textContent='–'; nightRateEl.textContent='–'; discountEl.textContent='–'; totalEl.textContent='–'; return; }
+      if(!a || !b){ 
+        nightsEl.textContent='–'; 
+        nightRateEl.textContent='–'; 
+        discountEl.textContent='–'; 
+        totalEl.textContent='–'; 
+        paypalFeeEl.textContent='–';
+        totalWithPaypalEl.textContent='–';
+        return; 
+      }
 
       if(b <= a){
         nightsEl.textContent='0';
         nightRateEl.textContent='–';
         discountEl.textContent='–';
         totalEl.textContent='Seleziona check-out successivo';
+        paypalFeeEl.textContent='–';
+        totalWithPaypalEl.textContent='–';
         return;
       }
 
@@ -511,6 +527,12 @@
 
       discountEl.textContent = appliedDiscount>0 ? `${(appliedDiscount*100).toFixed(0)}% (-€ ${discountAmt.toFixed(2)})` : 'Nessuno';
       totalEl.textContent = `€ ${total.toFixed(2)}`;
+      
+      // Calcola commissione PayPal e totale con PayPal
+      const paypalFeeAmt = total * paypalFee;
+      const totalWithPaypal = total + paypalFeeAmt;
+      paypalFeeEl.textContent = `+€ ${paypalFeeAmt.toFixed(2)}`;
+      totalWithPaypalEl.textContent = `€ ${totalWithPaypal.toFixed(2)}`;
 
       const formatted = d => {
         if(!d) return '';
