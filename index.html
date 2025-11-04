@@ -10,6 +10,9 @@
     src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
   </script>
 
+  <!-- Google Translate -->
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <style>
     :root{
       --bg: linear-gradient(135deg,#f7f9fc,#e3eeff);
@@ -18,7 +21,7 @@
       --accent:#0078D4;
       --success:#25D366;
       --radius:12px;
-      --maxw:420px;
+      --maxw:460px;
     }
     html,body{height:100%;margin:0;}
     body{
@@ -27,12 +30,23 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      padding:20px;
+      padding:30px;
     }
 
     .page {
       width:100%;
       max-width:var(--maxw);
+      position: relative;
+    }
+
+    /* Translator */
+    #google_translate_element {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      z-index: 10;
+      transform: scale(0.9);
+      transform-origin: top right;
     }
 
     .card {
@@ -44,17 +58,16 @@
     }
 
     /* slider */
-    .slider { width:100%; height:200px; border-radius:var(--radius); overflow:hidden; margin-bottom:12px; }
+    .slider { width:100%; height:240px; border-radius:var(--radius); overflow:hidden; margin-bottom:12px; }
     .slides { display:flex; width:100%; height:100%; transition:transform .9s ease; }
     .slide { width:100%; height:100%; object-fit:cover; flex-shrink:0; }
 
-    /* dots */
     .dots { display:flex; justify-content:center; gap:8px; margin:10px 0 14px 0; }
     .dot { width:10px; height:10px; border-radius:50%; background:#d0d0d0; cursor:pointer; transition:all .2s; }
     .dot.active { background:var(--accent); transform:scale(1.1); }
 
-    h1 { font-size:1.2rem; margin:8px 0 4px; color:#111; }
-    p.lead { margin:0 0 12px; color:var(--muted); font-size:0.95rem; }
+    h1 { font-size:1.3rem; margin:8px 0 4px; color:#111; text-align:center; }
+    p.lead { margin:0 0 12px; color:var(--muted); font-size:0.95rem; text-align:center; }
 
     label.small{ font-size:0.85rem; color:#333; display:block; margin-top:8px; font-weight:600; text-align:left; }
 
@@ -116,17 +129,24 @@
       line-height:1.3;
     }
 
-    /* responsive small */
-    @media (max-width:420px){
-      .page{padding:8px;}
+    footer {
+      margin-top:8px;
+      text-align:center;
+      font-size:0.85rem;
+      color:var(--muted);
+    }
+
+    @media (max-width:480px){
+      body{ padding:10px; }
+      .slider{ height:180px; }
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="card">
+    <div id="google_translate_element"></div>
 
-      <!-- SLIDER -->
+    <div class="card">
       <div class="slider" id="slider">
         <div class="slides" id="slides">
           <img class="slide" src="foto1.webp" alt="Casa Luigi 1">
@@ -140,14 +160,11 @@
       <h1>Prenota il tuo soggiorno</h1>
       <p class="lead">Controlla le date, scegli il numero di ospiti e visualizza il prezzo stimato. Minimo 2 notti.</p>
 
-      <!-- date + guests -->
       <div class="controls">
         <label class="small" for="checkin">Check-in</label>
         <input id="checkin" type="date" />
-
         <label class="small" for="checkout">Check-out</label>
         <input id="checkout" type="date" />
-
         <label class="small" for="guests">Ospiti</label>
         <select id="guests">
           <option value="1">1 persona</option>
@@ -157,8 +174,7 @@
         </select>
       </div>
 
-      <!-- pricing info -->
-      <div class="pricing" aria-hidden="false">
+      <div class="pricing">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <div style="font-weight:700">Tariffe stagionali (per notte)</div>
           <div class="muted" style="font-size:0.85rem">Prezzi per persona</div>
@@ -170,16 +186,14 @@
 
         <hr style="border:none;border-top:1px dashed #e2e8f0;margin:10px 0">
 
-        <div class="muted">Condizioni di soggiorno</div>
-        <div class="muted" style="margin-top:6px">
+        <div class="muted">
           • Soggiorno minimo: <strong>2 notti</strong>.<br>
-          • Sconto <strong>13%</strong> per soggiorni di almeno <strong>7 notti</strong>.<br>
-          • Sconto <strong>43%*</strong> per soggiorni di almeno <strong>30 notti</strong>.<br>
-          *Per affitti superiori a 1 mese è richiesto un contratto specifico; il canone sarà definito in base alla durata e ai requisiti richiesti.
+          • Sconto <strong>13%</strong> per soggiorni ≥ 7 notti.<br>
+          • Sconto <strong>43%</strong> per soggiorni ≥ 30 notti.<br><br>
+          Per affitti superiori a un mese è richiesto un contratto conforme alle tabelle del canone concordato.
         </div>
       </div>
 
-      <!-- summary / calculator -->
       <div class="summary" id="summary">
         <div style="display:flex;justify-content:space-between"><div class="muted">Notti</div><div id="nights">–</div></div>
         <div style="display:flex;justify-content:space-between"><div class="muted">Tariffa per notte</div><div id="nightRate">–</div></div>
@@ -187,7 +201,6 @@
         <div style="display:flex;justify-content:space-between; margin-top:8px;"><div class="muted">Totale stimato</div><div class="total" id="total">–</div></div>
       </div>
 
-      <!-- buttons -->
       <div class="buttons">
         <a id="whatsappBtn" class="btn whatsapp" target="_blank" href="#">Contattami su WhatsApp</a>
         <a id="emailBtn" class="btn email" target="_blank" href="#">Invia richiesta via Email</a>
@@ -195,34 +208,36 @@
       </div>
 
       <p class="note">
-        <strong>Nota:</strong> per soggiorni superiori a un mese verrà richiesto di sottoscrivere un contratto concordato; il prezzo finale potrà variare in base alla durata e ai requisiti necessari.
+        <strong>Nota:</strong> per soggiorni superiori a un mese verrà richiesto un contratto dedicato; il prezzo finale potrà variare in base alla durata e ai requisiti.
       </p>
 
-      <footer style="margin-top:8px; text-align:center; font-size:0.85rem; color:var(--muted)">
+      <footer>
         © 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a>
       </footer>
     </div>
   </div>
 
   <script>
-    // PAYPAL hosted button (stesso ID che avevi)
+    // GOOGLE TRANSLATE INIT
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'it',
+        includedLanguages: 'en,fr,de,es,pt,ru,ja,zh-CN',
+        layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+      }, 'google_translate_element');
+    }
+
+    // PAYPAL hosted button
     if (window.paypal && paypal.HostedButtons) {
       try {
         paypal.HostedButtons({ hostedButtonId: "KNC739BU5PTYJ" }).render("#paypal-container-KNC739BU5PTYJ");
       } catch(e){ console.warn('PayPal render error', e); }
     }
 
-    // IMPOSTAZIONI
-    const rates = {
-      1: 75,
-      2: 87,
-      "3-4": 110
-    };
-    const discount7 = 0.13;  // 13%
-    const discount30 = 0.43; // 43%
-    const minNights = 2;
+    // Prezzi e logica
+    const rates = { 1: 75, 2: 87, "3-4": 110 };
+    const discount7 = 0.13, discount30 = 0.43, minNights = 2;
 
-    // elementi
     const checkin = document.getElementById('checkin');
     const checkout = document.getElementById('checkout');
     const guests = document.getElementById('guests');
@@ -233,143 +248,51 @@
     const whatsappBtn = document.getElementById('whatsappBtn');
     const emailBtn = document.getElementById('emailBtn');
 
-    // imposta min date a oggi
     const today = new Date().toISOString().split('T')[0];
-    checkin.min = today;
-    checkout.min = today;
+    checkin.min = today; checkout.min = today;
 
     function parseDate(s){ return s ? new Date(s + 'T00:00:00') : null; }
-    function daysBetween(a,b){
-      if(!a||!b) return 0;
-      const ms = b - a;
-      return Math.round(ms / (1000*60*60*24));
+    function daysBetween(a,b){ return (!a||!b)?0:Math.round((b - a)/(1000*60*60*24)); }
+    function getRate(g){ return g==1?rates[1]:g==2?rates[2]:rates["3-4"]; }
+
+    function compute(){
+      const a=parseDate(checkin.value), b=parseDate(checkout.value), g=parseInt(guests.value);
+      if(!a||!b||b<=a){ nightsEl.textContent='–'; nightRateEl.textContent='–'; discountEl.textContent='–'; totalEl.textContent='–'; return;}
+      const nights=daysBetween(a,b); const rate=getRate(g);
+      const subtotal=rate*nights;
+      let d=0; if(nights>=30)d=discount30; else if(nights>=7)d=discount7;
+      const disc=subtotal*d, total=subtotal-disc;
+      nightsEl.textContent=nights;
+      nightRateEl.textContent=`€${rate.toFixed(2)}`;
+      discountEl.textContent=d?`${(d*100).toFixed(0)}% (-€${disc.toFixed(2)})`:'Nessuno';
+      totalEl.textContent=`€${total.toFixed(2)}`;
+      const fmt=d=>d?d.split('-').reverse().join('/'):'';
+      const msg=`Ciao Luigi, vorrei prenotare dal ${fmt(checkin.value)} al ${fmt(checkout.value)} per ${g} persona/e. Totale stimato: €${total.toFixed(2)}. È disponibile?`;
+      const phone='393382661198';
+      whatsappBtn.href=`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      emailBtn.href=`mailto:luigi.caparello@gmail.com?subject=Richiesta prenotazione&body=${encodeURIComponent(msg)}`;
     }
 
-    function getNightlyRate(guestCount){
-      if(guestCount == 1) return rates[1];
-      if(guestCount == 2) return rates[2];
-      if(guestCount >=3) return rates["3-4"];
-      return rates[1];
-    }
+    [checkin, checkout, guests].forEach(el => el.addEventListener('change', compute));
 
-    function compute() {
-      const a = parseDate(checkin.value);
-      const b = parseDate(checkout.value);
-      const gc = parseInt(guests.value,10);
-      if(!a || !b){ nightsEl.textContent='–'; nightRateEl.textContent='–'; discountEl.textContent='–'; totalEl.textContent='–'; return; }
-
-      // checkout must be after checkin
-      if(b <= a){
-        nightsEl.textContent='0';
-        nightRateEl.textContent='–';
-        discountEl.textContent='–';
-        totalEl.textContent='Seleziona check-out successivo';
-        return;
-      }
-
-      let nights = daysBetween(a,b);
-      // enforce min nights
-      if(nights < minNights){
-        // show note but still compute for info
-        nightsEl.textContent = `${nights} (minimo ${minNights} notti richiesto)`;
-      } else {
-        nightsEl.textContent = nights;
-      }
-
-      // nightly rate
-      const rate = getNightlyRate(gc);
-      nightRateEl.textContent = `€ ${rate.toFixed(2)}`;
-
-      // subtotal
-      let subtotal = rate * nights;
-
-      // discount
-      let appliedDiscount = 0;
-      if(nights >= 30){
-        appliedDiscount = discount30;
-      } else if(nights >= 7){
-        appliedDiscount = discount7;
-      }
-      const discountAmt = subtotal * appliedDiscount;
-      const total = subtotal - discountAmt;
-
-      discountEl.textContent = appliedDiscount>0 ? `${(appliedDiscount*100).toFixed(0)}% (-€ ${discountAmt.toFixed(2)})` : 'Nessuno';
-      totalEl.textContent = `€ ${total.toFixed(2)}`;
-
-      // aggiorna link whatsapp / email con riepilogo
-      const formatted = d => {
-        if(!d) return '';
-        const dd = d.split('-');
-        return `${dd[2]}/${dd[1]}/${dd[0]}`;
-      };
-      const msg = `Ciao Luigi, vorrei prenotare dal ${formatted(checkin.value)} al ${formatted(checkout.value)} per ${gc} persona/e. Totale stimato: € ${total.toFixed(2)}. È disponibile?`;
-      const phone = '393382661198';
-      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&body=${encodeURIComponent(msg)}`;
-    }
-
-    checkin.addEventListener('change', () => {
-      // update checkout min to be at least next day of checkin
-      if(checkin.value){
-        checkout.min = checkin.value;
-        if(checkout.value && checkout.value <= checkin.value){
-          // set checkout to checkin + 1
-          const d = new Date(checkin.value + 'T00:00:00');
-          d.setDate(d.getDate() + 1);
-          checkout.value = d.toISOString().split('T')[0];
-        }
-      }
-      compute();
-    });
-    checkout.addEventListener('change', compute);
-    guests.addEventListener('change', compute);
-
-    // initial compute (in case of defaults)
-    compute();
-
-    // SLIDER WITH DOTS AND CLICKABLE DOTS
+    // Slider
     (function(){
-      const slides = document.getElementById('slides');
-      const slideEls = document.querySelectorAll('.slide');
-      const dotsContainer = document.getElementById('dots');
-      const total = slideEls.length;
-      let idx = 0;
-      let interval;
-
-      // create dots
-      for(let i=0;i<total;i++){
-        const d = document.createElement('div');
-        d.className = 'dot' + (i===0 ? ' active' : '');
-        d.dataset.index = i;
-        d.addEventListener('click', () => {
-          idx = i;
-          show();
-          reset();
-        });
-        dotsContainer.appendChild(d);
-      }
-      const dots = document.querySelectorAll('.dot');
-
-      function show(){
-        slides.style.transform = `translateX(-${idx*100}%)`;
-        dots.forEach((el,i)=> el.classList.toggle('active', i===idx));
-      }
-
-      function next(){
-        idx = (idx + 1) % total;
-        show();
-      }
-
-      function start(){
-        interval = setInterval(next, 3500);
-      }
-      function reset(){
-        clearInterval(interval);
-        start();
-      }
+      const slides=document.getElementById('slides');
+      const imgs=document.querySelectorAll('.slide');
+      const dotsC=document.getElementById('dots');
+      let i=0, t;
+      imgs.forEach((_,idx)=>{
+        const d=document.createElement('div');
+        d.className='dot'+(idx===0?' active':'');
+        d.addEventListener('click',()=>{i=idx;show();reset();});
+        dotsC.appendChild(d);
+      });
+      const dots=document.querySelectorAll('.dot');
+      const show=()=>{slides.style.transform=`translateX(-${i*100}%)`;dots.forEach((e,k)=>e.classList.toggle('active',k===i));};
+      const next=()=>{i=(i+1)%imgs.length;show();};
+      const start=()=>{t=setInterval(next,3500);};
+      const reset=()=>{clearInterval(t);start();};
       start();
-      // expose show for debugging if needed
-      window._showSlide = show;
     })();
   </script>
 </body>
