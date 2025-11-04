@@ -1,248 +1,360 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Prenotazioni — Casa Luigi</title>
 
-  <!-- FullCalendar CSS -->
+  <!-- FullCalendar bundle (core + plugins) -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
   <!-- Google Translate -->
   <script type="text/javascript">
     function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        { pageLanguage: 'it', includedLanguages: 'en,fr,de,es,it' },
-        'google_translate_element'
-      );
+      new google.translate.TranslateElement({
+        pageLanguage: 'it',
+        includedLanguages: 'en,fr,de,es,pt',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
     }
   </script>
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+  <!-- PayPal JS (client-id demo sb, sostituisci con il tuo client-id) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
+
   <style>
-    body {
-      font-family: "Poppins", Arial, sans-serif;
-      background: #f7f9fc;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    :root{
+      --bg: linear-gradient(135deg,#f7f9fc,#e3eeff);
+      --card:#fff;
+      --muted:#666;
+      --accent:#0078D4;
+      --success:#25D366;
+      --radius:12px;
+      --maxw:900px;
+    }
+    html,body{height:100%;margin:0;}
+    body{
+      font-family: Inter, Arial, sans-serif;
+      background:var(--bg);
+      display:flex;
+      justify-content:center;
+      padding:30px;
+    }
+    .page{width:100%;max-width:var(--maxw);}
+    #google_translate_element{ text-align:right; margin-bottom:8px; }
+    .card{
+      background:var(--card);
+      border-radius:16px;
+      padding:20px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.08);
+      overflow:hidden;
     }
 
-    .container {
-      background: #fff;
-      border-radius: 16px;
-      padding: 20px;
-      max-width: 800px;
-      width: 100%;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-      text-align: center;
+    /* slider */
+    .slider { width:100%; height:280px; border-radius:var(--radius); overflow:hidden; margin-bottom:16px; position:relative;}
+    .slides { display:flex; width:100%; height:100%; transition:transform .9s ease; }
+    .slide { width:100%; height:100%; object-fit:cover; flex-shrink:0; }
+
+    .dots { display:flex; justify-content:center; gap:8px; margin:10px 0 14px 0; }
+    .dot { width:10px;height:10px;border-radius:50%;background:#ccc;cursor:pointer;transition:all .2s;}
+    .dot.active{ background:var(--accent); transform:scale(1.1); }
+
+    h1{ text-align:center; color:#111; margin:8px 0 4px; }
+    p.lead { text-align:center; color:var(--muted); margin-bottom:18px; }
+
+    .layout {
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap:20px;
+      align-items:start;
     }
 
-    h1 {
-      margin-top: 0;
-      color: #2c3e50;
+    /* calendar area */
+    #calendar { background:#fff; border-radius:10px; padding:10px; min-height:480px; box-shadow:0 2px 10px rgba(0,0,0,0.04); }
+
+    /* side panel */
+    .panel {
+      background:linear-gradient(180deg,#fbfdff,#f3f8ff);
+      border-radius:10px;
+      padding:14px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.04);
     }
 
-    #calendar {
-      margin-top: 20px;
+    label { display:block; font-size:0.9rem; color:#333; margin-top:8px; font-weight:600; }
+    input.readonly {
+      width:100%; padding:10px; border-radius:8px; border:1px solid #d6d6d6; font-size:0.95rem; background:#fff;
     }
 
-    .button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 16px;
-      color: #fff;
-      background-color: #25D366;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: 0.3s;
-    }
+    select { width:100%; padding:10px; border-radius:8px; border:1px solid #d6d6d6; font-size:0.95rem; }
 
-    .button:hover {
-      background-color: #1ebd5a;
-    }
+    .summary { margin-top:12px; background:#fff; padding:10px; border-radius:8px; border:1px solid #eef4ff; }
+    .summary .row { display:flex; justify-content:space-between; margin:6px 0; color:#333; }
+    .total { font-weight:700; color:#111; font-size:1.05rem; }
 
-    /* Carousel */
-    .carousel {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      overflow: hidden;
-      border-radius: 16px;
-    }
+    .buttons { margin-top:12px; display:flex; flex-direction:column; gap:8px; }
+    .btn { padding:11px 12px; border-radius:10px; text-align:center; text-decoration:none; color:#fff; font-weight:700; display:block; }
+    .btn.whatsapp{ background:var(--success); }
+    .btn.email{ background:var(--accent); }
 
-    .carousel img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      position: absolute;
-      top: 0;
-      left: 0;
-      opacity: 0;
-      transition: opacity 1.5s ease-in-out;
-    }
+    .paypal-container { margin-top:8px; }
 
-    .carousel img.active {
-      opacity: 1;
-    }
+    .note { margin-top:10px; font-size:0.9rem; color:var(--muted); }
 
-    /* Prezzi */
-    .pricing {
-      margin-top: 30px;
-      text-align: left;
-    }
-
-    .pricing h2 {
-      text-align: center;
-      color: #2c3e50;
-    }
-
-    .pricing p {
-      font-size: 16px;
-      color: #444;
-      line-height: 1.6;
-    }
-
-    /* PayPal Button */
-    .paypal {
-      margin-top: 25px;
-      text-align: center;
-    }
-
-    #google_translate_element {
-      position: absolute;
-      top: 10px;
-      right: 20px;
+    @media (max-width:980px){
+      .layout{ grid-template-columns: 1fr; }
+      #calendar{ min-height:420px; }
+      .slider{ height:200px; }
     }
   </style>
 </head>
-
 <body>
-  <div id="google_translate_element"></div>
+  <div class="page">
+    <div id="google_translate_element"></div>
 
-  <div class="container">
-    <!-- Carousel -->
-    <div class="carousel">
-      <img src="foto1.webp" class="active" alt="Appartamento Casa Luigi" />
-      <img src="foto2.avif" alt="Camera" />
-      <img src="foto3.avif" alt="Cucina" />
-      <img src="foto4.avif" alt="Terrazza" />
-    </div>
+    <div class="card">
 
-    <h1>Prenota il tuo soggiorno</h1>
-    <p>Seleziona le date disponibili nel calendario e invia la tua richiesta direttamente su WhatsApp.</p>
+      <!-- slider -->
+      <div class="slider" aria-hidden="false">
+        <div class="slides" id="slides">
+          <img class="slide" src="foto1.webp" alt="Casa Luigi 1">
+          <img class="slide" src="foto2.avif" alt="Casa Luigi 2">
+          <img class="slide" src="foto3.avif" alt="Casa Luigi 3">
+          <img class="slide" src="foto4.avif" alt="Casa Luigi 4">
+        </div>
+      </div>
+      <div class="dots" id="dots"></div>
 
-    <div id="calendar"></div>
+      <h1>Prenota il tuo soggiorno</h1>
+      <p class="lead">Seleziona le date direttamente nel calendario, poi conferma numero di ospiti e procedi al pagamento o contatto.</p>
 
-    <a id="whatsappBtn" class="button" target="_blank">Invia richiesta su WhatsApp</a>
+      <div class="layout">
+        <!-- left: calendar -->
+        <div id="calendar"></div>
 
-    <!-- Sezione Prezzi -->
-    <div class="pricing">
-      <h2>Tariffe Stagionali</h2>
-      <p>
-        💰 <strong>Prezzi attuali:</strong><br />
-        • 1 persona: <strong>€75</strong> a notte<br />
-        • 2 persone: <strong>€87</strong> a notte<br />
-        • 3-4 persone: <strong>€110</strong> a notte<br /><br />
+        <!-- right: panel -->
+        <div class="panel">
+          <label>Check-in</label>
+          <input id="checkin_display" class="readonly" readonly placeholder="Seleziona una data dal calendario">
 
-        ⏳ <strong>Soggiorno minimo:</strong> 2 notti<br />
-        💸 <strong>Sconti:</strong><br />
-        • -13% per soggiorni di almeno 7 notti<br />
-        • -43% per soggiorni di almeno 1 mese<br /><br />
+          <label>Check-out</label>
+          <input id="checkout_display" class="readonly" readonly placeholder="Seleziona una data dal calendario">
 
-        📜 Per affitti superiori a un mese è richiesto un contratto conforme al
-        <em>canone concordato</em>, in base alla durata e ai requisiti previsti dalla normativa vigente.
-      </p>
-    </div>
+          <label>Ospiti</label>
+          <select id="guests">
+            <option value="1">1 persona</option>
+            <option value="2">2 persone</option>
+            <option value="3">3 persone</option>
+            <option value="4">4 persone</option>
+          </select>
 
-    <!-- PayPal Payment -->
-    <div class="paypal">
-      <h2>Paga con PayPal</h2>
-      <p>Effettua un pagamento sicuro per confermare la tua prenotazione.</p>
-      <div id="paypal-button-container"></div>
+          <div class="summary" aria-live="polite">
+            <div class="row"><div>Notti</div><div id="nights">–</div></div>
+            <div class="row"><div>Tariffa / notte</div><div id="nightRate">–</div></div>
+            <div class="row"><div>Sconto</div><div id="discount">–</div></div>
+            <div class="row" style="border-top:1px dashed #eef4ff; padding-top:8px;"><div class="muted">Totale</div><div class="total" id="total">–</div></div>
+          </div>
+
+          <div class="buttons">
+            <a id="whatsappBtn" class="btn whatsapp" href="#" target="_blank">Richiesta via WhatsApp</a>
+            <a id="emailBtn" class="btn email" href="#" target="_blank">Invia richiesta via Email</a>
+            <div class="paypal-container" id="paypal-container"></div>
+          </div>
+
+          <p class="note">Minimo 2 notti. Sconto 13% ≥ 7 notti, 43% ≥ 30 notti. Per affitti >1 mese si richiede contratto.</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- FullCalendar JS -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales-all.min.js"></script>
-
-  <!-- PayPal JS -->
-  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
-
   <script>
-    // Calendario
-    const phone = "393382661198";
-    let selectedDates = [];
+    // PRICING logic
+    const rates = {1:75, 2:87, "3-4":110};
+    const discount7 = 0.13, discount30 = 0.43, minNights = 2;
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const calendarEl = document.getElementById("calendar");
+    // elements
+    const checkinDisplay = document.getElementById('checkin_display');
+    const checkoutDisplay = document.getElementById('checkout_display');
+    const guestsSel = document.getElementById('guests');
+    const nightsEl = document.getElementById('nights');
+    const nightRateEl = document.getElementById('nightRate');
+    const discountEl = document.getElementById('discount');
+    const totalEl = document.getElementById('total');
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    const emailBtn = document.getElementById('emailBtn');
 
-      const today = new Date().toISOString().split("T")[0];
+    let selectedCheckin = null;
+    let selectedCheckout = null;
+    let lastTotal = 0;
+
+    function formatDateISOToIT(iso) {
+      if(!iso) return '';
+      const parts = iso.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function getRate(guests) {
+      if(guests === 1) return rates[1];
+      if(guests === 2) return rates[2];
+      return rates["3-4"];
+    }
+
+    function computeAndRender() {
+      if(!selectedCheckin || !selectedCheckout) {
+        nightsEl.textContent = '–';
+        nightRateEl.textContent = '–';
+        discountEl.textContent = '–';
+        totalEl.textContent = '–';
+        whatsappBtn.href = '#';
+        emailBtn.href = '#';
+        lastTotal = 0;
+        return;
+      }
+
+      const a = new Date(selectedCheckin + 'T00:00:00');
+      const b = new Date(selectedCheckout + 'T00:00:00');
+      const nights = Math.round((b - a) / (1000*60*60*24));
+      if(nights <= 0) {
+        nightsEl.textContent = '0';
+        totalEl.textContent = 'Seleziona check-out successivo';
+        return;
+      }
+      nightsEl.textContent = nights;
+
+      const guests = parseInt(guestsSel.value,10);
+      const rate = getRate(guests);
+      nightRateEl.textContent = `€ ${rate.toFixed(2)}`;
+
+      let subtotal = rate * nights;
+      let applied = 0;
+      if(nights >= 30) applied = discount30;
+      else if(nights >= 7) applied = discount7;
+      const discountAmt = subtotal * applied;
+      const total = subtotal - discountAmt;
+
+      discountEl.textContent = applied ? `${(applied*100).toFixed(0)}% (-€ ${discountAmt.toFixed(2)})` : 'Nessuno';
+      totalEl.textContent = `€ ${total.toFixed(2)}`;
+      lastTotal = total;
+
+      // update contact links
+      const msg = `Ciao Luigi, vorrei prenotare dal ${formatDateISOToIT(selectedCheckin)} al ${formatDateISOToIT(selectedCheckout)} per ${guests} persona/e. Totale stimato: € ${total.toFixed(2)}. È disponibile?`;
+      const phone = '393382661198';
+      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&body=${encodeURIComponent(msg)}`;
+    }
+
+    guestsSel.addEventListener('change', computeAndRender);
+
+    // FullCalendar initialization
+    document.addEventListener('DOMContentLoaded', function() {
+      if(!window.FullCalendar) {
+        console.error('FullCalendar non caricato.');
+        return;
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      const calendarEl = document.getElementById('calendar');
 
       const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: "dayGridMonth",
+        initialView: 'dayGridMonth',
         selectable: true,
         selectMirror: true,
-        locale: "it",
+        locale: 'it',
         validRange: { start: today },
-        select: function (info) {
-          if (info.startStr < today) {
-            alert("Non puoi selezionare una data passata!");
-            return;
-          }
-          if (info.endStr <= info.startStr) {
-            alert("Il check-out deve essere successivo al check-in!");
-            return;
-          }
-          selectedDates = [info.startStr, info.endStr];
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek'
         },
+        height: 'auto',
+        select: function(info) {
+          // info.startStr (inclusive) - info.endStr (exclusive)
+          // Ensure checkout > checkin and nights >= minNights
+          const checkin = info.startStr;
+          const checkout = info.endStr;
+          const nights = Math.round((new Date(checkout+'T00:00:00') - new Date(checkin+'T00:00:00'))/(1000*60*60*24));
+          if(nights < minNights) {
+            alert(`Il soggiorno minimo è di ${minNights} notti.`);
+            return;
+          }
+          selectedCheckin = checkin;
+          selectedCheckout = checkout;
+
+          checkinDisplay.value = formatDateISOToIT(checkin);
+          checkoutDisplay.value = formatDateISOToIT(checkout);
+
+          computeAndRender();
+        }
       });
 
       calendar.render();
+
+      // render PayPal button (uses lastTotal)
+      renderPayPalButton();
     });
 
-    // WhatsApp Button
-    const whatsappBtn = document.getElementById("whatsappBtn");
-    whatsappBtn.addEventListener("click", function () {
-      if (selectedDates.length === 0) {
-        alert("Seleziona prima le date nel calendario.");
+    // PayPal button rendering with dynamic amount
+    function renderPayPalButton() {
+      const container = document.getElementById('paypal-container');
+      container.innerHTML = ''; // clear any previous
+
+      if(!window.paypal) {
+        console.warn('PayPal SDK non caricato.');
         return;
       }
-      const [checkin, checkout] = selectedDates;
-      const message = `Ciao Luigi, vorrei prenotare dal ${checkin} al ${checkout}.`;
-      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      window.open(url, "_blank");
-    });
 
-    // Carousel automatico
-    const images = document.querySelectorAll(".carousel img");
-    let currentIndex = 0;
-    setInterval(() => {
-      images[currentIndex].classList.remove("active");
-      currentIndex = (currentIndex + 1) % images.length;
-      images[currentIndex].classList.add("active");
-    }, 4000);
+      paypal.Buttons({
+        style: { color: 'gold', shape:'pill', label:'paypal' },
+        createOrder: function(data, actions) {
+          if(!selectedCheckin || !selectedCheckout || lastTotal <= 0) {
+            alert('Seleziona date valide e numero di ospiti prima di pagare.');
+            return;
+          }
+          // create order with dynamic amount
+          return actions.order.create({
+            purchase_units: [{
+              amount: { value: lastTotal.toFixed(2), currency_code: 'EUR' },
+              description: `Prenotazione Casa Luigi dal ${selectedCheckin} al ${selectedCheckout}`
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            alert('Pagamento completato! Grazie — ' + (details.payer.name.given_name || ''));
+            // optionally: here you could redirect or call your backend to record booking
+          });
+        },
+        onError: function(err) {
+          console.error('PayPal error', err);
+          alert('Errore durante il pagamento. Riprovare.');
+        }
+      }).render('#paypal-container');
+    }
 
-    // PayPal
-    paypal.Buttons({
-      style: { color: "gold", shape: "pill", label: "paypal" },
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [{ amount: { value: "50.00" } }], // importo di esempio
-        });
-      },
-      onApprove: (data, actions) => {
-        return actions.order.capture().then(() => {
-          alert("Pagamento completato con successo!");
-        });
-      },
-    }).render("#paypal-button-container");
+    // Simple slider with dots
+    (function(){
+      const slides = document.getElementById('slides');
+      const slideEls = document.querySelectorAll('.slide');
+      const dotsContainer = document.getElementById('dots');
+      const total = slideEls.length;
+      let idx = 0, timer;
+      // create dots
+      for(let i=0;i<total;i++){
+        const d = document.createElement('div');
+        d.className = 'dot' + (i===0 ? ' active':'' );
+        d.dataset.index = i;
+        d.addEventListener('click', ()=>{ idx = i; show(); reset(); });
+        dotsContainer.appendChild(d);
+      }
+      const dots = document.querySelectorAll('.dot');
+      function show(){ slides.style.transform = `translateX(-${idx*100}%)`; dots.forEach((el,i)=>el.classList.toggle('active',i===idx)); }
+      function next(){ idx = (idx+1) % total; show(); }
+      function start(){ timer = setInterval(next,3500); }
+      function reset(){ clearInterval(timer); start(); }
+      start();
+    })();
   </script>
 </body>
 </html>
