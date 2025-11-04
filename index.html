@@ -38,6 +38,7 @@
       width: 100%;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
       text-align: center;
+      position: relative;
     }
 
     h1 {
@@ -108,10 +109,26 @@
       line-height: 1.6;
     }
 
-    /* PayPal Button */
     .paypal {
       margin-top: 25px;
       text-align: center;
+    }
+
+    .booking-form {
+      margin-top: 20px;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #total {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #2c3e50;
     }
 
     #google_translate_element {
@@ -139,9 +156,19 @@
 
     <div id="calendar"></div>
 
+    <div class="booking-form">
+      <label for="guests">Numero di ospiti:</label>
+      <select id="guests">
+        <option value="1">1 persona</option>
+        <option value="2">2 persone</option>
+        <option value="3">3 persone</option>
+        <option value="4">4 persone</option>
+      </select>
+      <div id="total"></div>
+    </div>
+
     <a id="whatsappBtn" class="button" target="_blank">Invia richiesta su WhatsApp</a>
 
-    <!-- Sezione Prezzi -->
     <div class="pricing">
       <h2>Tariffe Stagionali</h2>
       <p>
@@ -149,18 +176,15 @@
         • 1 persona: <strong>€75</strong> a notte<br />
         • 2 persone: <strong>€87</strong> a notte<br />
         • 3-4 persone: <strong>€110</strong> a notte<br /><br />
-
         ⏳ <strong>Soggiorno minimo:</strong> 2 notti<br />
         💸 <strong>Sconti:</strong><br />
         • -13% per soggiorni di almeno 7 notti<br />
         • -43% per soggiorni di almeno 1 mese<br /><br />
-
         📜 Per affitti superiori a un mese è richiesto un contratto conforme al
         <em>canone concordato</em>, in base alla durata e ai requisiti previsti dalla normativa vigente.
       </p>
     </div>
 
-    <!-- PayPal Payment -->
     <div class="paypal">
       <h2>Paga con PayPal</h2>
       <p>Effettua un pagamento sicuro per confermare la tua prenotazione.</p>
@@ -176,13 +200,12 @@
   <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
 
   <script>
-    // Calendario
     const phone = "393382661198";
     let selectedDates = [];
+    let totalAmount = 0;
 
     document.addEventListener("DOMContentLoaded", function () {
       const calendarEl = document.getElementById("calendar");
-
       const today = new Date().toISOString().split("T")[0];
 
       const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -192,35 +215,60 @@
         locale: "it",
         validRange: { start: today },
         select: function (info) {
-          if (info.startStr < today) {
-            alert("Non puoi selezionare una data passata!");
+          const checkin = new Date(info.startStr);
+          const checkout = new Date(info.endStr);
+          const nights = (checkout - checkin) / (1000 * 60 * 60 * 24);
+
+          if (nights < 2) {
+            alert("Il soggiorno minimo è di 2 notti.");
             return;
           }
-          if (info.endStr <= info.startStr) {
-            alert("Il check-out deve essere successivo al check-in!");
-            return;
-          }
+
           selectedDates = [info.startStr, info.endStr];
+          calculateTotal();
         },
       });
 
       calendar.render();
     });
 
-    // WhatsApp Button
-    const whatsappBtn = document.getElementById("whatsappBtn");
-    whatsappBtn.addEventListener("click", function () {
+    document.getElementById("guests").addEventListener("change", calculateTotal);
+
+    function calculateTotal() {
+      if (selectedDates.length === 0) return;
+
+      const guests = parseInt(document.getElementById("guests").value);
+      const checkin = new Date(selectedDates[0]);
+      const checkout = new Date(selectedDates[1]);
+      const nights = (checkout - checkin) / (1000 * 60 * 60 * 24);
+
+      let nightlyRate =
+        guests === 1 ? 75 : guests === 2 ? 87 : 110;
+
+      totalAmount = nightlyRate * nights;
+
+      // sconti
+      if (nights >= 30) totalAmount *= 0.57;
+      else if (nights >= 7) totalAmount *= 0.87;
+
+      document.getElementById("total").textContent =
+        `Totale soggiorno: €${totalAmount.toFixed(2)} (${nights} notti)`;
+    }
+
+    document.getElementById("whatsappBtn").addEventListener("click", function () {
       if (selectedDates.length === 0) {
         alert("Seleziona prima le date nel calendario.");
         return;
       }
+
       const [checkin, checkout] = selectedDates;
-      const message = `Ciao Luigi, vorrei prenotare dal ${checkin} al ${checkout}.`;
+      const guests = document.getElementById("guests").value;
+      const message = `Ciao Luigi, vorrei prenotare dal ${checkin} al ${checkout} per ${guests} persone. Totale stimato: €${totalAmount.toFixed(2)}.`;
       const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
       window.open(url, "_blank");
     });
 
-    // Carousel automatico
+    // Carousel
     const images = document.querySelectorAll(".carousel img");
     let currentIndex = 0;
     setInterval(() => {
@@ -233,8 +281,12 @@
     paypal.Buttons({
       style: { color: "gold", shape: "pill", label: "paypal" },
       createOrder: (data, actions) => {
+        if (totalAmount <= 0) {
+          alert("Seleziona le date e il numero di ospiti prima di procedere al pagamento.");
+          return;
+        }
         return actions.order.create({
-          purchase_units: [{ amount: { value: "50.00" } }], // importo di esempio
+          purchase_units: [{ amount: { value: totalAmount.toFixed(2) } }],
         });
       },
       onApprove: (data, actions) => {
