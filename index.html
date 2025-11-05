@@ -21,6 +21,19 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1088181475116856"
           crossorigin="anonymous"></script>
 
+  <!-- Google Translate -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'it',
+        includedLanguages: 'en,fr,de,es,it,pt',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
   <style>
     :root {
       --bg: linear-gradient(135deg,#f7f9fc,#e3eeff);
@@ -276,6 +289,83 @@
 
     footer a:hover { text-decoration: underline; }
 
+    /* ========== GOOGLE TRANSLATE WIDGET MIGLIORATO ========== */
+    #google_translate_element {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 8px 12px;
+      transition: all 0.3s ease;
+    }
+
+    #google_translate_element:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      transform: translateY(-1px);
+    }
+
+    /* Nascondi il logo "Powered by Google" */
+    .goog-logo-link {
+      display: none !important;
+    }
+
+    .goog-te-gadget {
+      color: transparent !important;
+      font-size: 0 !important;
+    }
+
+    /* Stile per il select */
+    .goog-te-gadget .goog-te-combo {
+      margin: 0 !important;
+      padding: 8px 32px 8px 12px !important;
+      border: 2px solid #e3eeff !important;
+      border-radius: 8px !important;
+      background: white !important;
+      color: #0078D4 !important;
+      font-weight: 600 !important;
+      font-size: 0.9rem !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230078D4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 8px center !important;
+      background-size: 16px !important;
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+    }
+
+    .goog-te-gadget .goog-te-combo:hover {
+      border-color: #0078D4 !important;
+      background-color: #f8fbff !important;
+    }
+
+    .goog-te-gadget .goog-te-combo:focus {
+      outline: none !important;
+      border-color: #0078D4 !important;
+      box-shadow: 0 0 0 3px rgba(0,120,212,0.1) !important;
+    }
+
+    /* Aggiungi icona lingua prima del widget */
+    #google_translate_element::before {
+      content: "🌐";
+      font-size: 1.2rem;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    /* Nascondi la barra di traduzione di Google in alto */
+    .goog-te-banner-frame.skiptranslate {
+      display: none !important;
+    }
+
+    body {
+      top: 0 !important;
+    }
+
     /* Responsive telefono */
     @media (max-width:480px) {
       body { padding: 12px; align-items: flex-start; }
@@ -292,12 +382,37 @@
       .btn { padding: 12px 14px; font-size: 0.9rem; }
       .note { font-size: 0.8rem; padding: 10px; }
       footer { font-size: 0.8rem; }
+
+      /* Google Translate mobile */
+      #google_translate_element {
+        top: auto;
+        bottom: 12px;
+        right: 12px;
+        padding: 6px 10px;
+      }
+
+      #google_translate_element::before {
+        font-size: 1rem;
+        margin-right: 6px;
+      }
+
+      .goog-te-gadget .goog-te-combo {
+        padding: 6px 28px 6px 10px !important;
+        font-size: 0.85rem !important;
+        background-size: 14px !important;
+        background-position: right 6px center !important;
+      }
     }
 
     /* Tablet */
     @media (min-width:481px) and (max-width:768px) {
       .page { max-width: 540px; }
       .slider { height: 280px; }
+      
+      #google_translate_element {
+        top: 16px;
+        right: 16px;
+      }
     }
 
     /* Desktop */
@@ -308,64 +423,15 @@
       .slider { height: 300px; }
       h1 { font-size: 1.5rem; }
     }
-
-     <!-- ✅ Google Translate widget (migliorato per mobile e desktop) -->
-  <style>
-    #google_translate_element {
-      position: fixed;
-      top: 8px;
-      right: 10px;
-      z-index: 9999;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 4px 8px;
-      font-size: 0.9rem;
-    }
-    #google_translate_element select {
-      border: none;
-      background: transparent;
-      font-weight: 200;
-      color: #0078D4;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    @media (max-width: 480px) {
-      #google_translate_element {
-        top: auto;
-        bottom: 8px;
-        right: 8px;
-        padding: 3px 6px;
-        font-size: 0.8rem;
-      }
-    }
   </style>
-
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'it',
-        includedLanguages: 'en,fr,de,es,it,pt',
-        layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-      }, 'google_translate_element');
-    }
-  </script>
-  <script type="text/javascript"
-    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 </head>
 
 <body>
-   
- 
+  <!-- Widget Traduzione -->
+  <div id="google_translate_element"></div>
 
   <div class="page">
-
     <div class="card">
-       <!-- Pulsante e pannello traduzione -->
-            <div id="google_translate_element">
-     
-  </div>
       <!-- SLIDER -->
       <div class="slider" id="slider">
         <div class="slides" id="slides">
@@ -659,8 +725,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
