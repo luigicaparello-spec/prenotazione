@@ -462,4 +462,148 @@
     checkin.min = today;
     checkout.min = today;
 
-   
+    function parseDate(s) { return s ? new Date(s + 'T00:00:00') : null; }
+
+    function daysBetween(a, b) {
+      if (!a || !b) return 0;
+      const ms = b - a;
+      return Math.round(ms / (1000 * 60 * 60 * 24));
+    }
+
+    function getNightlyRate(guestCount) {
+      if (guestCount == 1) return rates[1];
+      if (guestCount == 2) return rates[2];
+      if (guestCount >= 3) return rates["3-4"];
+      return rates[1];
+    }
+
+    function compute() {
+      const a = parseDate(checkin.value);
+      const b = parseDate(checkout.value);
+      const gc = parseInt(guests.value, 10);
+
+      if (!a || !b) {
+        nightsEl.textContent = '–';
+        nightRateEl.textContent = '–';
+        discountEl.textContent = '–';
+        totalEl.textContent = '–';
+        paypalFeeEl.textContent = '–';
+        totalWithPaypalEl.textContent = '–';
+        return;
+      }
+
+      if (b <= a) {
+        nightsEl.textContent = '0';
+        nightRateEl.textContent = '–';
+        discountEl.textContent = '–';
+        totalEl.textContent = 'Seleziona check-out successivo';
+        paypalFeeEl.textContent = '–';
+        totalWithPaypalEl.textContent = '–';
+        return;
+      }
+
+      let nights = daysBetween(a, b);
+      if (nights < minNights) {
+        nightsEl.textContent = `${nights} (minimo ${minNights} notti)`;
+      } else {
+        nightsEl.textContent = nights;
+      }
+
+      const rate = getNightlyRate(gc);
+      nightRateEl.textContent = `€ ${rate.toFixed(2)}`;
+
+      let subtotal = rate * nights;
+      let appliedDiscount = 0;
+
+      if (nights >= 30) appliedDiscount = discount30;
+      else if (nights >= 7) appliedDiscount = discount7;
+
+      const discountAmt = subtotal * appliedDiscount;
+      const total = subtotal - discountAmt;
+
+      discountEl.textContent =
+        appliedDiscount > 0
+          ? `${(appliedDiscount * 100).toFixed(0)}% (-€ ${discountAmt.toFixed(2)})`
+          : 'Nessuno';
+
+      totalEl.textContent = `€ ${total.toFixed(2)}`;
+
+      // Calcola commissione PayPal
+      const paypalFeeAmt = total * paypalFee;
+      const totalWithPaypal = total + paypalFeeAmt;
+      paypalFeeEl.textContent = `+€ ${paypalFeeAmt.toFixed(2)}`;
+      totalWithPaypalEl.textContent = `€ ${totalWithPaypal.toFixed(2)}`;
+
+      const formatted = d => {
+        if (!d) return '';
+        const dd = d.split('-');
+        return `${dd[2]}/${dd[1]}/${dd[0]}`;
+      };
+
+      const msg = `Ciao Luigi, vorrei prenotare dal ${formatted(checkin.value)} al ${formatted(checkout.value)} per ${gc} persona/e. Totale stimato: € ${total.toFixed(2)}. È disponibile?`;
+
+      const phone = '393382661198';
+      whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&body=${encodeURIComponent(msg)}`;
+    }
+
+    checkin.addEventListener('change', () => {
+      if (checkin.value) {
+        checkout.min = checkin.value;
+        if (checkout.value && checkout.value <= checkin.value) {
+          const d = new Date(checkin.value + 'T00:00:00');
+          d.setDate(d.getDate() + 1);
+          checkout.value = d.toISOString().split('T')[0];
+        }
+      }
+      compute();
+    });
+
+    checkout.addEventListener('change', compute);
+    guests.addEventListener('change', compute);
+    compute();
+
+    // SLIDER
+    (function () {
+      const slides = document.getElementById('slides');
+      const slideEls = document.querySelectorAll('.slide');
+      const dotsContainer = document.getElementById('dots');
+      const total = slideEls.length;
+      let idx = 0;
+      let interval;
+
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === 0 ? ' active' : '');
+        d.dataset.index = i;
+        d.addEventListener('click', () => {
+          idx = i;
+          show();
+          reset();
+        });
+        dotsContainer.appendChild(d);
+      }
+
+      const dots = document.querySelectorAll('.dot');
+
+      function show() {
+        slides.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach((el, i) => el.classList.toggle('active', i === idx));
+      }
+
+      function next() {
+        idx = (idx + 1) % total;
+        show();
+      }
+
+      function start() { interval = setInterval(next, 3500); }
+      function reset() { clearInterval(interval); start(); }
+
+      start();
+    })();
+
+    // Inizializza Google AdSense
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</body>
+</html>
