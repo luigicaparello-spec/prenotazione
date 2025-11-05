@@ -9,6 +9,10 @@
   <script 
     src="https://www.paypal.com/sdk/js?client-id=BAAGX03WrER82CZMeusOaNKvKygI5SwJHKBd25j46YqkC9KPDP6fXuWXAza2Ew9yLFpGPw66DgOQskwMjs&components=hosted-buttons&disable-funding=venmo&currency=EUR">
   </script>
+  
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1088181475116856"
+     crossorigin="anonymous"></script>
 
   <style>
     :root{
@@ -210,6 +214,28 @@
 
     .paypal-container { 
       margin-top:10px; 
+    }
+    
+    .ad-container {
+      margin: 20px 0;
+      padding: 16px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 12px;
+      border: 1px solid #dee2e6;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .ad-label {
+      font-size: 0.75rem;
+      color: #6c757d;
+      text-align: center;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
     }
 
     .note {
@@ -424,6 +450,19 @@
       <div class="note">
         <strong>Nota:</strong> per soggiorni superiori a un mese verrà richiesto di sottoscrivere un contratto concordato; il prezzo finale potrà variare in base alla durata e ai requisiti necessari.
       </div>
+      
+      <!-- Google AdSense -->
+      <div class="ad-container">
+        <div style="width: 100%;">
+          <div class="ad-label">Pubblicità</div>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-1088181475116856"
+               data-ad-slot="auto"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+        </div>
+      </div>
 
       <footer>
         © 2025 Casa Luigi — <a href="https://maps.app.goo.gl/8UjpskqT4CEAgex68" target="_blank">Visualizza su Google Maps</a>
@@ -604,6 +643,9 @@
       }
       start();
     })();
+    
+    // Inizializza Google AdSense
+    (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
 </body>
 </html>
