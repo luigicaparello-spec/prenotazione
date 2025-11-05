@@ -292,19 +292,19 @@
     /* ========== GOOGLE TRANSLATE WIDGET MIGLIORATO ========== */
     #google_translate_element {
       position: fixed;
-      top: 12px;
-      right: 12px;
+      top: 16px;
+      right: 16px;
       z-index: 9999;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 8px 12px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+      padding: 6px 10px;
       transition: all 0.3s ease;
     }
 
     #google_translate_element:hover {
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
     }
 
     /* Nascondi il logo "Powered by Google" */
@@ -320,19 +320,19 @@
     /* Stile per il select */
     .goog-te-gadget .goog-te-combo {
       margin: 0 !important;
-      padding: 8px 32px 8px 12px !important;
+      padding: 6px 28px 6px 10px !important;
       border: 2px solid #e3eeff !important;
-      border-radius: 8px !important;
+      border-radius: 7px !important;
       background: white !important;
       color: #0078D4 !important;
       font-weight: 600 !important;
-      font-size: 0.9rem !important;
+      font-size: 0.85rem !important;
       cursor: pointer !important;
       transition: all 0.2s ease !important;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230078D4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230078D4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
       background-repeat: no-repeat !important;
-      background-position: right 8px center !important;
-      background-size: 16px !important;
+      background-position: right 7px center !important;
+      background-size: 14px !important;
       appearance: none !important;
       -webkit-appearance: none !important;
       -moz-appearance: none !important;
@@ -352,9 +352,10 @@
     /* Aggiungi icona lingua prima del widget */
     #google_translate_element::before {
       content: "🌐";
-      font-size: 1.2rem;
-      margin-right: 8px;
+      font-size: 1.1rem;
+      margin-right: 6px;
       vertical-align: middle;
+      display: inline-block;
     }
 
     /* Nascondi la barra di traduzione di Google in alto */
