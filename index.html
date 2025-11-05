@@ -291,7 +291,7 @@
 
     /* ========== GOOGLE TRANSLATE WIDGET MIGLIORATO ========== */
     #google_translate_element {
-      position: relative;
+      position: absolute;
       top: 16px;
       right: 16px;
       z-index: 9999;
@@ -411,6 +411,7 @@
       .slider { height: 280px; }
       
       #google_translate_element {
+        position: fixed;
         top: 16px;
         right: 16px;
       }
@@ -423,6 +424,11 @@
       .card { padding: 32px; }
       .slider { height: 300px; }
       h1 { font-size: 1.5rem; }
+      #google_translate_element {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+      }
     }
   </style>
 </head>
@@ -730,5 +736,6 @@
   </script>
 </body>
 </html>
+
 
 
