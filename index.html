@@ -291,7 +291,7 @@
 
     /* ========== GOOGLE TRANSLATE WIDGET MIGLIORATO ========== */
     #google_translate_element {
-      position: absolute;
+      position: auto;
       top: 16px;
       right: 16px;
       z-index: 9999;
@@ -411,7 +411,7 @@
       .slider { height: 280px; }
       
       #google_translate_element {
-        position: fixed;
+        position: auto;
         top: 16px;
         right: 16px;
       }
@@ -425,7 +425,7 @@
       .slider { height: 300px; }
       h1 { font-size: 1.5rem; }
       #google_translate_element {
-        position: fixed;
+        position: auto;
         top: 16px;
         right: 16px;
       }
@@ -440,10 +440,11 @@
   <div class="page">
     <div class="card">
       <!-- SLIDER -->
+      <div id="google_translate_element"></div>
       <div class="slider" id="slider">
         
         <!-- Widget Traduzione -->
-        <div id="google_translate_element"></div>
+        
         
         <div class="slides" id="slides">
           <img class="slide" src="foto1.webp" alt="Casa Luigi 1">
@@ -736,6 +737,7 @@
   </script>
 </body>
 </html>
+
 
 
 
