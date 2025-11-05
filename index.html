@@ -38,8 +38,8 @@
     * {
       box-sizing: border-box;
     }
-    html,body{height:100%;margin:0;}
-    body{
+    html,{height:100%;margin:0;}
+    {
       font-family: Inter, Arial, sans-serif;
       background: var(--bg);
       display:flex;
@@ -279,7 +279,7 @@
 
     /* Responsive per telefono */
     @media (max-width:480px){
-      body {
+       {
         padding:12px;
         align-items:flex-start;
       }
@@ -360,7 +360,7 @@
     
     /* Desktop grande */
     @media (min-width:769px){
-      body {
+       {
         padding:40px 20px;
         padding-top:60px;
       }
@@ -383,7 +383,7 @@
     }
   </style>
 </head>
-<body>
+<>
   <div class="page">
     <div class="card">
 
@@ -594,7 +594,7 @@
       const msg = `Ciao Luigi, vorrei prenotare dal ${formatted(checkin.value)} al ${formatted(checkout.value)} per ${gc} persona/e. Totale stimato: € ${total.toFixed(2)}. È disponibile?`;
       const phone = '393382661198';
       whatsappBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&body=${encodeURIComponent(msg)}`;
+      emailBtn.href = `mailto:luigi.caparello@gmail.com?subject=Richiesta%20prenotazione&=${encodeURIComponent(msg)}`;
     }
 
     checkin.addEventListener('change', () => {
@@ -658,8 +658,25 @@
     // Inizializza Google AdSense
     (adsbygoogle = window.adsbygoogle || []).push({});
   </script>
+
+  <div id="google_translate_element" style="position: fixed; bottom: 10px; right: 10px; z-index: 1000;"></div>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'it',           // lingua originale del sito
+      includedLanguages: 'en,fr,de,es,pt', // lingue che vuoi offrire
+      layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+    }, 'google_translate_element');
+  }
+</script>
+
+<script type="text/javascript" 
+  src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 </body>
 </html>
+
 
 
 
